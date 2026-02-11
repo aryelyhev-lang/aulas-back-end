@@ -94,7 +94,7 @@ entradaDeDados.question("Digite o nome do aluno: ", function (nome){
                     //portanto não é necessario fazer uma comparação como
                     //isNaN(nota1) == true || isNaN(nota) == true
                     }else if(isNaN(nota1) || isNaN(nota2) || isNaN(nota3) || isNaN(nota4)){
-                        console.log("ERRO: Não é possível calculr a média com a entrada de caracters ou letras!!!")
+                        console.log("ERRO: Não é possível calcular a média com a entrada de caracters ou letras!!!")
                 
                     //a função isNam significa "is not number?" ou seja, "isso não é um número?"
                     //permite validar se o conteúdo da variavel tem algum caracter ao invés de número 
