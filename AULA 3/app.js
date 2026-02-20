@@ -44,11 +44,12 @@ entradaDeDados.question("Digite o nome do Cliente: ", function(nome){
                     //calculos.calcularJurosCompostos para chamar a função do modulo 
 
                     if(montante){
-                        console.log("O montante final é: " + montante.toFixed(2))
+                        console.log("O resultado final é: " + montante.toFixed(2))
+                        
                     }else{
-                        console.log("ERRO: Devido a problemas no calculo de juros, o programa encerrou.")
-                        entradaDeDados.close()
-                    }
+                        console.log("ERRO: Devido a problemas no calculo ou no operador matemático, o programa encerrou.")
+            
+                    }entradaDeDados.close()
                 })
             })
         })
