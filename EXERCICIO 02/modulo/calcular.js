@@ -9,6 +9,14 @@
 //como criar const nomeQualquer = function(){}
 //assim você guarda uma função dentro de uma const 
 
+//valida se os dados estão corretos
+const validarDados = function(valor1, valor2, operador){
+    if (valor1 == "" || isNan(valor1) || valor2 == "" || isNaN(valor2)){
+        return false
+    }else{
+        return true
+    }
+}
 
 //modelo de função anonima
 //chama-se função anonima pois ela não possui nomenclatura, ela carrega o nome da const
@@ -54,16 +62,16 @@ const calcular = function(numero1, numero2, operador){
     //como ultilizar o switch case ao inves do if e else
     switch (operadorMatematico) {
         case "SOMAR": //if
-            resultado = valor1 + valor2
+            resultado = somar(valor1 + valor2)
             break;
         case "SUBTRAIR": //else if
-            resultado = valor1 - valor2
+            resultado = dividir(valor1 - valor2)
             break;
         case "DIVIDIR": //else if
-            resultado = valor1 / valor2
+            resultado = subtrair(valor1 / valor2)
             break;
         case "MULTIPLICAR": //else if
-            resultado = valor1 * valor2
+            resultado = multiplicar(valor1 * valor2)
             break;
         //default: //else
             //return false    <- precisaria desse bloco de codigos caso a variavel resultado não fosse criada como false lá em cima no let
@@ -73,6 +81,40 @@ const calcular = function(numero1, numero2, operador){
     return resultado //retorna o resultado da conta
 }
 
+//função baseada em setas, tambem é conhecido como (Arrow function)
+//diferente da função anonima, não é necessario utilizar a palavra function
+//o sinal => já serve para substituir essa palavra
+//essa função tem como objetivo reduzir ao maximo a quantidade de codigo escrita
+//a seta significa "execulte", por conta disso ela não precisa de um returne
+//nesse caso, por ser um codigo pequeno, não é necessario utilizar chaves
+const subtrair      = (numero1, numero2) => Number(numero1) - Number(numero2) //lembrar de alterar os operadores matematicos
+const multiplicar   = (numero1, numero2) => Number(numero1) * Number(numero2) //como + * / -
+const dividir       = (numero1, numero2) => Number(numero1) / Number(numero2) 
+const somar         = (numero1, numero2) => Number(numero1) + Number(numero2) // {
+    
+    //a função recebe as variaveis numero1 e numero2
+    //após isso ele execulta e já converte para numero
+    //o return acontece automaticamente por ser uma função de apenas uma linha
+
+// } não é necessario chaves NESSE caso
+
+
 //por não possuir uma enrada de dados, você atribui um valor para testar a função
 //o console log precisa estar fora da função
-console.log(calcular("11.5", 50, "somar"))
+//console.log(calcular("11.5", 50, "somar")) //apenas use para fazer testes
+
+//DETALHE A SE LEMBRAR (importante)
+//isNam valida o CONTEUDO (verifica se é número independe se o número estiver dentro de aspas)
+//typeof valida o tipo de DADOS (se o tipo de dados é uma string ou number)
+
+
+module.exports = {
+    validarDados,
+    calcular,
+    multiplicar,
+    dividir,
+    subtrair,
+    somar //caso queira ultilizar uma função privada, nesse caso, ao exportar ela se tornaria publica
+    //dessa forma quem for ultilizar a função somar, poderia declarar os valores sem precisar determinar o operador
+    //diferente da função calcular que precisaria determinar o operador matematico
+}
