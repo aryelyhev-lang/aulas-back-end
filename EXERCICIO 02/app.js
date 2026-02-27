@@ -6,7 +6,7 @@
  * *****************************************************/
 
 
-//import d biblioteca para calculos
+//import de biblioteca para calculos
 const calculosMatematicos = require("./modulo/calcular.js")
 
 let valor1 = "10"
