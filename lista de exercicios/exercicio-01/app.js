@@ -13,7 +13,7 @@ const calculosMatematicos = require("./modulo/calcularIMC")
 
 let pesoCliente = "90"
 let nomeCliente = "vilma" 
-let alturaCliente = "1,60" //valor com virgula que será convertido para um ponto
+let alturaCliente = "1,70" //valor com virgula que será convertido para um ponto
 let alturaConvertida = alturaCliente.replaceAll(',' , '.')
 //ao utilizar o replaceAll para converter a virgula por um ponto
 //é necessario criar uma variavel nova que irá receber a variavel inicial 
