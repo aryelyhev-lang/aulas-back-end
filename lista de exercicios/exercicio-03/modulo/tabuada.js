@@ -25,9 +25,12 @@ const validarDados = function(tabuadaInicial, tabuadaFinal){
 }
 
 //função para realizar o calculo da tabuada
-const calcularTabuada = function(tabuadaInicial, tabuadaFinal){
-    
-
+const gerarTabuada = function(tabuadaInicial, tabuadaFinal){
+    //recebe as variaveis criadas no app
+    let tabuada = Number(tabuadaInicial)
+    let tab = Number(tabuadaFinal)
+    let cont = 0 //contador de quantas casas a tabuada terá
+    let resultado 
 }
 
 
@@ -35,5 +38,5 @@ const calcularTabuada = function(tabuadaInicial, tabuadaFinal){
 //exporta as funções para o app.js
 module.exports ={
    validarDados,
-   calcularTabuada
+   gerarTabuada
 }
