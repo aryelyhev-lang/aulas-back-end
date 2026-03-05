@@ -1,5 +1,5 @@
 /*******************************************************
- * Objetivo: Arquivo responsavel realizar o calculo da media escolar
+ * Objetivo: Arquivo responsavel poerealizar o calculo da media escolar
  * Data: 04/03/2026
  * Autor: Aryely Hevylyn
  * Versão: 1.0
