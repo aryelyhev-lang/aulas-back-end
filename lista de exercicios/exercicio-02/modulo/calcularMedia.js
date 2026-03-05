@@ -56,16 +56,7 @@ const statusAluno = function(media){
     }
 }
 
-//calcula novamente a media escolar, juntamente com a nota do exame
-const alunoRecuperacao = function(statusAluno, media, notaExame){
 
-    //novo calculo da media caso o aluno esteja em recuperação
-    if(statusAluno == "recuperação"){
-
-        let mediaFinal = (Number(notaExame) + Number(media)) / 2
-        return mediaFinal
-    }
-}
 
 //verifica qual o genero do aluno e devolve a menssagem com os pronomes corretos
 const tratamentoDeGeneroAluno = function(generoAluno){
@@ -79,15 +70,15 @@ const tratamentoDeGeneroAluno = function(generoAluno){
     }
 }
 
-//verifica qual o genero do professor e devolve a menssagem com os pronomes corretos
+//verifica qual o genero do professor e devolve a menssagem com os pronomes corretos 
 const tratamentoDeGeneroProfessor = function(generoProfessor){
     let sexoDoProfessor = String(generoProfessor)
 
     if(sexoDoProfessor == "feminino"){
-        return generoProf = "A professora"
+        return "professora: "
     
     }else if(sexoDoProfessor == "masculino"){
-        return generoProf = "O professor"
+        return "professor: "
     }
 }
 
@@ -97,7 +88,6 @@ module.exports ={
     validarDados,
     calcularMedia,
     statusAluno,
-    alunoRecuperacao,
     tratamentoDeGeneroAluno,
     tratamentoDeGeneroProfessor
 }
