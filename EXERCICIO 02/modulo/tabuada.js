@@ -26,7 +26,7 @@ const gerartabuada = function(tabuada){
     let resultado 
 
     //repetição para gerar a tabuada até 10
-    //só criar o while depois que criar a formula da primeira linha (a linha que será usada narepetição)
+    //só criar o while depois que criar a formula da primeira linha (a linha que será usada na repetição)
     while(cont <= 10){
 
         //guarda a conta na variavel resulta

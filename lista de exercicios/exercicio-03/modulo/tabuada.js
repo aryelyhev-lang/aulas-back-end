@@ -6,36 +6,41 @@
  * *****************************************************/
 
 //função para validar os dados inseridos
-const validarDados = function(tabuadaInicial, tabuadaFinal){
-    if(tabuadaInicial == "" || tabuadaFinal == ""){
+const validarDados = function (tabuadaInicial, tabuadaFinal) {
+    if (tabuadaInicial == "" || tabuadaFinal == "") {
         //proibe a entrada de campos vazios
         return false
 
-    }else if( !isNaN(tabuadaInicial) || !isNaN(tabuadaFinal)){
+    } else if (!isNaN(tabuadaInicial) || !isNaN(tabuadaFinal)) {
         //não permite a entrada de letras ou caracters
         return false
 
-    }else if(tabuadaInicial >= 2 && tabuadaInicial <= 100 && tabuadaFinal >=2 && tabuadaFinal <= 100){
+    } else if (tabuadaInicial >= 2 && tabuadaInicial <= 100 && tabuadaFinal >= 2 && tabuadaFinal <= 100) {
         //permite apenas numeros entre 2 e 100
         return false
-    }else{
+    } else {
         //retorna true caso tudo acima esteja correto
         return true
     }
 }
 
 //função para realizar o calculo da tabuada
-const gerarTabuada = function(tabuadaInicial, tabuadaFinal){
+const gerarTabuada = function (tabuadaInicial, tabuadaFinal){
+
     //recebe as variaveis criadas no app
     let tabuada = Number(tabuadaInicial)
     let tab = Number(tabuadaFinal)
-    let cont = 0 //contador de quantas casas a tabuada terá
-    let resultado 
+    let resultado
+
+    //verifica se a tabuada inicial é maior que a tabuada final
+    if (tabuadaInicial >= tabuadaFinal){
+
+        //enquanto o contador for entre 0 e 10 vcont++ (adicione mais 1)
+        for (let cont = 0; cont <= 10; cont++) {
+            resultado = tabuada * tab
+             console.log(`${tabuada} x ${tab} = ${resultado}`)
+        }
+    }
 }
 
-
-//exporta as funções para o app.js
-module.exports ={
-   validarDados,
-   gerarTabuada
-}
+console.log(gerarTabuada())
