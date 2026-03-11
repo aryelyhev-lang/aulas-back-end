@@ -40,11 +40,12 @@
  */
 
 //formas de criar um array
-const listaDeNomes         = ['José',  'Maria', 'João','André', 'Alex'] //criar e já ir atribuindo os valores
-//o java script permite que você adicione varios tipos de dados diferentes dentro do mesmo array (como string, number e boleano) 
+const listaDeNomes          = ['josé',  'Maria', 'João','André', 'Alex', 'Carlos', 'Ana', 'Bruna', 'Jake', 'josé', 'josé da silva'] //criar e já ir atribuindo os conteudos
+                            //o java script permite que você adicione varios tipos de dados diferentes dentro do mesmo array (como string, number e boleano) 
 
-const listaDeClientes   = [] //criar ele vazio e depois atribuir um valor de outro lugar
-const listaDeFornecedores = []
+const listaDeClientes       = [] //criar ele vazio e depois atribuir um valor de outro lugar
+const listaDeFornecedores   = []
+
 
 const exibirDados = function(){
 
@@ -127,7 +128,7 @@ const manipularDados = function(){
     console.log(listaDeClientes)
 
     //ao ultilizar o push, ele segue a ordem sequencial do indice e adiciona o proximo conteudo no final da lista de indices
-    //permite adicionar novos valores no arrey, sempre no final da lista
+    //permite adicionar novos valores no array sempre no FINAL da lista
     listaDeFornecedores.push('luiz da silva')
     listaDeFornecedores.push('zezinho da silva')
     listaDeFornecedores.push(`huguinho da silva`)
@@ -137,9 +138,103 @@ const manipularDados = function(){
     //caso voce queira acessar um dos 3 elementos que esteja dentro do mesmo push
     //será possivel já que o push adiciona um indice diferente para cada um
 
-    console.log(listaDeFornecedores)
+    //mostra como a lista estava antes do unshift
+    console.table(listaDeFornecedores)
+
+
+    //unshift permite adcionar novos elementos no array no INICIO da lista
+    listaDeFornecedores.unshift("ana carolina")
+    console.table(listaDeFornecedores)//mostra como a lista ficou depois do unshift
+
+
+    //pop permite remover elementos do FINAL da lista
+    listaDeFornecedores.pop()
+    console.table(listaDeFornecedores)
+
+
+    //shift permite remover um elemento do INICIO da lista e depois reorganiza os indices
+    listaDeFornecedores.shift()
+    console.table(listaDeFornecedores)
+
+    //permite remover um elemento da lista baseado no indice
+    listaDeFornecedores.splice(2,1) //vai até o indice 2 e remove o primeiro indice que for encontrado lá
+                                    //exemplo: (2,2) a partir do indice 2, apague 2 elementos
+                                    //splice( indice, quantidade de elementos)
+    console.table(listaDeFornecedores)
 }
 
+const removerItem = function(nome){
+    //percorre o array e entrega um elemento atraves de uma função de callback 
+    //for each devolve um elemento e não o indice
+
+    //nesse caso o for in seria mais adequado pois ele percorre o array e devolve o indice do elemento
+    // for(indice in listaDeNomes){    //ele automaticamente percorre TODOS os elementos dentro do array
+
+    //  //pega o indice do array e guarda numa variavel (variavel indice)
+    //  //usa o for in para descobrir o indice 
+    //     if(listaDeNomes[indice] == nome){
+    //         listaDeNomes.splice(indice, 1)  //remove o elemento atraves do indice
+    //                                         //ou seja usa um nome da lista para que o for in encontre o indice
+    //                                         //e depois atraves do splice remove 1 elemento do indice do nome
+    //     }
+    // }
+
+    //Retorna o indice de um elemento após fazer a busca dentro arrey pelo valor/nome do elemento
+    //quando o index of não encontrar um elemento dentro do array, ele retornará -1 
+
+    //let indice = listaDeNomes.indexOf(nome)   //ele pecorre o array até encontrar o conteudo (ele para quando encontra o valor/nome)
+                                                //ou seja, se tiver dois valores iguais que você precisa apagar
+                                                //ele percorre o array e apaga APENAS o primeiro que for encontrado
+    //listaDeNomes.splice(indice, 1)            //remove o conteudo atraves do indice 
+   
+    //forma de usar o if e else no indexof para retornar true ou false
+    //caso o indexof percorra o array e não encontre o elemento, ele retornara -1
+    //por conta disse se ele for diferente de -> != menos 1 (será true) 
+    //se não for diferente de -1 ele será false
+    let indice = listaDeNomes.indexOf(nome)
+    if(indice != -1){
+        listaDeNomes.splice(indice, 1)
+        return true
+    }else{
+        return false
+    }
+}
+
+const verificarItem = function(nome){
+    //includes = verifica a existencia de um conteudo dentro de uma lista
+    //e retorna true ou false (é um boleano)
+    return resposta = listaDeNomes.includes(nome)
+}
+
+//verifica quantas vezes um elemento se repete e retorna a quantidade dessa repetição
+//ou seja, se na listaDeNomes tiver dois josé escritos iguais
+//o foreach vai verificar quantas vezes esse conteudo se repete e irá retornar a quantidade (2)
+const quantidadeDeItens = function(nome){
+    let cont = 0
+    listaDeNomes.forEach(function(item){
+        //o toUpperCase irá tornar tudo escrito para maiusculo
+        //torna as variaveis item e nome em string
+        if (String(item).toUpperCase() == String(nome).toUpperCase())
+            cont +=1
+    })
+
+    return cont
+}
+
+
+// let resposta = removerItem ('Carlos')
+// if (resposta)
+//     console.log("item removido com sucesso")
+//     //avalia se o item do removerItem foi removido e imprime essa mensagem
+// else
+//     console.log("Não foram encontrados itens para ser removido")
+//     //avalia caso Não tenha sido removido e imprime essa mensagem
+
 //chama a função para que possa ser exibido no terminal
-//exibirDados()
-manipularDados()
+
+// console.table(listaDeNomes) //mostra o depois da lista
+// exibirDados()
+// manipularDados()
+//console.table(listaDeNomes) //mostra a lista antes do removerItem(bruna, maria)
+//console.log(verificarItem('Maria'))
+console.log(quantidadeDeItens("josé"))
