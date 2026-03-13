@@ -37,8 +37,9 @@ const gerarTabuada = function (tabuadaInicial, tabuadaFinal){
 
         //enquanto o contador for entre 0 e 10 vcont++ (adicione mais 1)
         for (let cont = 0; cont <= 10; cont++) {
-            resultado = tabuada * tab
-             console.log(`${tabuada} x ${tab} = ${resultado}`)
+            
+            resultado = tabuada * cont
+            console.log(`${tabuada} x ${cont} = ${resultado}`)
         }
     }
 }

@@ -46,7 +46,7 @@ const listaDeNomes          = ['josé',  'Maria', 'João','André', 'Alex', 'Car
 const listaDeClientes       = [] //criar ele vazio e depois atribuir um valor de outro lugar
 const listaDeFornecedores   = []
 
-
+//funções com array
 const exibirDados = function(){
 
     console.log(listaDeNomes)
@@ -157,10 +157,18 @@ const manipularDados = function(){
     console.table(listaDeFornecedores)
 
     //permite remover um elemento da lista baseado no indice
-    listaDeFornecedores.splice(2,1) //vai até o indice 2 e remove o primeiro indice que for encontrado lá
-                                    //exemplo: (2,2) a partir do indice 2, apague 2 elementos
-                                    //splice( indice, quantidade de elementos)
+    listaDeFornecedores.splice(2,1)     //vai até o indice 2 e remove o primeiro indice que for encontrado 
+    console.table(listaDeFornecedores)  //exemplo: (2,2) a partir do indice 2, apague 2 elementos
+                                        //splice( indice, quantidade de elementos)
+    
+    //o splice tambem serve para adicionar itens em lugares expecificos
+    //o primeiro indice determina a posição que o elemento adicionado ficará(2)
+    //já o (0) determina a quantidade de itens que serão removidos
+    //e o elemento entre aspas é o que será adcionado no lugar
+    //ele adciona o novo elemento e reordena o resto para baixo  
+    listaDeFornecedores.splice(2, 0, 'Carlos da silva')
     console.table(listaDeFornecedores)
+    
 }
 
 const removerItem = function(nome){
@@ -221,6 +229,154 @@ const quantidadeDeItens = function(nome){
     return cont
 }
 
+//função onde será ultilizado json
+const criandoDadosJson = function(){
+    //json é baseado em chave valor, conteudo e atributos
+    //sugestão: atributos sempre em minusculo e estar entre aspas duplas
+    let aluno = {   
+                    "nome": "josé",
+                    "ra": 123456, //não está entre aspas pois é um numero inteiro
+                    "telefone": "9876-43829", //está entre aspas porque pode ser considerado uma string pelo -
+                    "email": "jose@gmail.com"
+                }
+
+    //exibindo o json inteiro
+    console.log(aluno)
+    //console.table(aluno)  //table normalmente usado somente em array por ter uma tabela chamada index, ou seja indice
+                            //pois no json não tem indice, ele tem atributos
+
+    //exibindo apenas o atributo do json
+    console.log(aluno.nome) 
+    console.log(aluno.email)
+
+    //adiciona um novo atributo no json
+    aluno.sexo = 'masculino'
+    console.log(aluno)
+
+    //remove um atributo dentro do json
+    delete aluno.telefone
+    console.log(aluno)
+}
+
+//misturando as estruturas de array e json
+const cadastroDeProdutos = function(){
+
+    //esse objeto de cores é um array que terá um json dentro
+    let cores = [ // <- inicio do array
+        {"id": 1, "cor": "Branco"},    //é o indice 0 do array
+        {"id": 2, "cor": "Preto"},     //indice 1 do array
+        {"id": 3, "cor": "Azul"},      //indice 2
+        {"id": 4, "cor": "Rosa"},      //indice 3
+        {"id": 5, "cor": "Cinza"}      //indice 4
+        //o atributo deve ser sempre em minusculo
+        //mas o conteudo pode ser em maiusculo
+    ]
+
+    let marcas = [
+        {"id": 1, "marca": "LG",        "telefone": "128344828", "email": "lg@gmail.com"},           //indice 0
+        {"id": 2, "marca": "Dell",      "telefone": "224737373", "email": "dell@gmail.com"},         //indice 1
+        {"id": 3, "marca": "Lenovo",    "telefone": "337827374", "email": "lenovo@gmail.com"},       //indice 2
+        {"id": 4, "marca": "Apple",     "telefone": "673838338", "email": "apple@gmail.com"},        //indice 3
+        {"id": 5, "marca": "Rayzer",    "telefone": "394848383", "email": "rayzer@gmail.com"},       //indice 4
+        {"id": 6, "marca": "Logitech",  "telefone": "385575757", "email": "logitech@gmail.com"},     //indice 5
+        {"id": 7, "marca": "Multilaser","telefone": "575478833", "email": "multilaser@gmail.com"}    //indice 6
+    ]
+
+    let produtos = [
+        {
+            "id": 1,
+            "nome": "monitor",
+            "descricao": "27 polegadas",
+            "marca":[
+                         marcas[1].marca //pega o atributo 1 dentro do objeto marcas
+                    ],
+            "qtde": 20,
+            "cor": [        //chama o objeto e os respectivos indices de cada cor
+                cores[4],   //um array que guarda mais de uma cor
+                cores[1]    //dentro de outro array
+            ],
+            "valor": 880.50 //o valor não fica nas aspas pois é um number e não uma string 
+        },
+
+        { 
+            "id": 2,
+            "nome": "teclado",
+            "descricao": "tecldo mecânico RGB",
+            "marca":[
+                        marcas[5].marca //pega um objeto dentro do atributo marcas
+                    ],
+            "qtde": 200,
+            "cor": cores, //trás todas as CORES guardadas dentro do atributo cores
+            "valor": 150
+        },
+
+        { 
+            "id": 3, //indice do produto mouse
+            "nome": "mouse",
+            "descricao": "mouse sem fio",
+            "marca":[
+                        marcas[0].marca,
+                        marcas[1].marca,
+                        marcas[5].marca
+                    ], 
+            "qtde": 500,
+            "cor":[     //chama o objeto e os respectivos indices de cada cor
+                        cores[0],
+                        cores[1],
+                        cores[4]
+            ],
+            "valor": 150
+        },
+
+    ]
+
+    //tentativa de fazer repetição de produto
+    produtos.forEach(function(nomeProduto){
+        console.log(nomeProduto)
+
+        //repetição de cores
+        produtos.forEach(function(nomeCor){
+            console.log(nomeProduto.cor.cor)
+
+            //repetição de marcas
+            produtos.forEach(function(nomeMarca){
+                console.log(nomeProduto.marca.marcas)
+            })
+        })
+    })
+
+    //um json só da para pegar um elemento por ponto
+    //para array é chamado pelo indice 
+
+    //console.table(cores)          //mostra uma tabela com os indices, os ids e as cores
+
+    //console.log(cores[2].nome)    //exibe apenas o elemento dentro do atributo NOME
+                                    //no console log acima, ele chama o objeto (cores) pelo INDICE 
+                                    //não pelo id guardado dentro do json cores
+
+    // console.log(produtos)           //navega dentro de 1 array
+    // console.log(produtos[0].cor)    //navega dentro de dois array´s
+    // console.table(produtos)         //mostra os indices dentro do objeto produtos
+                              
+    // console.log(produtos[0].cor[1].cor)
+    //por ter apenas um produto cadastrado, ele é o indice 0
+    //0 que representa qual indice está o produto que guarda o atributo cor
+    //o 1 representa o indice da cor preto que está dentro do atributo cor
+
+
+    //estrutura de repetição com um array que guarda um json
+    //chama o objeto array produtos com o indice 0
+    //.cor para chamar o atributo dentro do json
+    //forEach faz as repetições de acordo com a quantidade de elemntos dentro do array
+    //function recebe nome de uma variavel criada
+    //.cor para pegar o NOME dentro do json
+    // produtos[0].cor.forEach(function(nomeCor){
+    //     console.log("a cor do produto é: " + nomeCor.cor)   //.cor para chegar no nome da cor
+    //                                                         //caso contrario ele te devolve o "objeto" inteiro do json
+    // })
+
+    //console.table(produtos)
+}
 
 // let resposta = removerItem ('Carlos')
 // if (resposta)
@@ -237,4 +393,7 @@ const quantidadeDeItens = function(nome){
 // manipularDados()
 //console.table(listaDeNomes) //mostra a lista antes do removerItem(bruna, maria)
 //console.log(verificarItem('Maria'))
-console.log(quantidadeDeItens("josé"))
+//console.log(quantidadeDeItens("josé"))
+//(manipularDados)
+//criandoDadosJson()
+cadastroDeProdutos()
