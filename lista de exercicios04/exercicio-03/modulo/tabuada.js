@@ -25,7 +25,7 @@ const validarDados = function (tabuadaInicial, tabuadaFinal) {
 }
 
 //função para realizar o calculo da tabuada
-const gerarTabuada = function (tabuadaInicial, tabuadaFinal){
+const gerarTabuada = function (tabuadaInicial, tabuadaFinal) {
 
     //recebe as variaveis criadas no app
     let tabuada = Number(tabuadaInicial)
@@ -33,15 +33,23 @@ const gerarTabuada = function (tabuadaInicial, tabuadaFinal){
     let resultado
 
     //verifica se a tabuada inicial é maior que a tabuada final
-    if (tabuadaInicial >= tabuadaFinal){
-
+    if (tabuada <= tab) {
         //enquanto o contador for entre 0 e 10 vcont++ (adicione mais 1)
-        for (let cont = 0; cont <= 10; cont++) {
-            
-            resultado = tabuada * cont
-            console.log(`${tabuada} x ${cont} = ${resultado}`)
+        for (let cont1 = 1; cont1 <= tab; cont1++) {
+
+            for (let cont2 = tabuada; cont2 <= 10; cont2++) {
+
+                for (let cont3 = 1; cont3 <= 10; cont3++) {
+                    console.log("------------------------------------------------------")
+                    console.log(`${tabuada} x ${cont3} = ${tabuada * cont3}`);
+                    console.log("------------------------------------------------------")
+                }
+            }
         }
+
+    }else {
+        console.log("Erro: O início não pode ser maior que o fim.");
     }
 }
 
-console.log(gerarTabuada())
+gerarTabuada(3, 2)

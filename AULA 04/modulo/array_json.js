@@ -37,7 +37,11 @@
     let cliente = { "nome": "josé",
                     "telefone": "11 95748393",
                     "email": "jose@gmail.com"}
+
+    estura de repetição -> for in, for off e for each só servem para ultilizar em repetições de array
+    eles precisam de um indice para percorrer um objeto  
  */
+
 
 //formas de criar um array
 const listaDeNomes          = ['josé',  'Maria', 'João','André', 'Alex', 'Carlos', 'Ana', 'Bruna', 'Jake', 'josé', 'josé da silva'] //criar e já ir atribuindo os conteudos
@@ -284,7 +288,8 @@ const cadastroDeProdutos = function(){
 
     let produtos = [
         {
-            "id": 1,
+                     //o array ultiliza o indice para percorrer os elementos e NÃO os id's
+            "id": 1, //o id é um atributo que nós determinamos (pode ser um numero ou um nome)
             "nome": "monitor",
             "descricao": "27 polegadas",
             "marca":[
@@ -330,21 +335,81 @@ const cadastroDeProdutos = function(){
 
     ]
 
-    //tentativa de fazer repetição de produto
-    produtos.forEach(function(nomeProduto){
-        console.log(nomeProduto)
+    // //tentativa de fazer repetição de produto
+    // produtos.forEach(function(nomeProduto){ 
+    //     console.log(nomeProduto) 
+    //     //esqueceu de colocar o "." nome do atributo (nesse caso seria nomeProduto.nome)  
 
-        //repetição de cores
-        produtos.forEach(function(nomeCor){
-            console.log(nomeProduto.cor.cor)
+    //     //repetição de cores
+    //     produtos.forEach(function(nomeCor){
+    //         console.log(nomeProduto.cor.cor)
 
-            //repetição de marcas
-            produtos.forEach(function(nomeMarca){
-                console.log(nomeProduto.marca.marcas)
-            })
+    //         //repetição de marcas
+    //         produtos.forEach(function(nomeMarca){
+    //             console.log(nomeProduto.marca.marcas)
+    //         })
+    //     })
+    // })
+
+    // O array "produtos" é o principal, onde estão armazenados todos os produtos.
+    // Cada item desse array é um objeto (JSON) com informações como nome, marcas e cores.
+
+    // Usamos o forEach para percorrer TODOS os produtos do array.
+    // A cada repetição, a variável "itemProdutos" representa um produto diferente.
+    produtos.forEach(function(itemProdutos){
+
+        // Aqui acessamos e exibimos o nome do produto atual
+        console.log(`produto:  ${itemProdutos.nome}`) 
+
+        // Cada produto possui um array de marcas (itemProdutos.marca)
+        // Então usamos outro forEach para percorrer TODAS as marcas desse produto
+        itemProdutos.marca.forEach(function(itemMarca){
+            console.log(`   marca: ${itemMarca}`)
+        })
+
+         // Cada produto também possui um array de cores (itemProdutos.cor)
+        // Novamente usamos o forEach para percorrer todas as cores
+        // "itemCor" representa cada objeto de cor dentro do array
+        itemProdutos.cor.forEach(function(itemCor){
+            console.log(`   cor: ${itemCor.cor}`)
+        })
+
+    })
+
+    //pesquisando um produto pelo NOME 
+    console.log('   pesquisando produtos pelo nome')
+    let nome = 'teclado' //varivavel que guarda o nome que precisa ser achado dentro do array
+
+    produtos.forEach(function(itemProdutos){
+        //verifica se o nomeProduto é igual a variavel nome
+        //toUpperCase torna as duas variaveis em maisculo para comparar os elementos
+        //nome é um atributo comum, então é possivel fazer um if de cara
+        if(String(itemProdutos.nome).toUpperCase() == String(nome).toUpperCase()){
+            console.log(itemProdutos)
+        } 
+    
+    })
+
+    //pesquisando um produto pela COR 
+    console.log('   pesquisando produtos pela cor')
+    let cor = 'azul'
+    let status = false //variavel boleano que inicia como falso, ela só se torna verdadeira quando o encontrar o elemento 
+
+    produtos.forEach(function(itemProdutos){
+        //dentro do array produto existe o array cor
+        //para percorrer o array cor, é necessario fazer outra repetição
+        itemProdutos.cor.forEach(function(itemCor){
+            if(String(itemCor.cor).toUpperCase() == String(cor).toUpperCase()){
+                console.log(itemProdutos) //exibe os produtos que tem a cor atribuida dentro da variavel
+                status = true //determina o status como true apenas dentro desta condicional 
+            }
         })
     })
 
+    //se o item pesquisado for diferente de verdadeiro, imprime a mensagem abaixo 
+    //simbolo que representa diferente de "!"
+    if(!status) // <- se o status for diferente de verdadeiro
+        console.log('item pesquisado não encontrado...')
     //um json só da para pegar um elemento por ponto
     //para array é chamado pelo indice 
 
