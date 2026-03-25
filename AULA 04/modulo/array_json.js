@@ -381,9 +381,9 @@ const cadastroDeProdutos = function(){
     let nome = 'teclado' //varivavel que guarda o nome que precisa ser achado dentro do array
 
     produtos.forEach(function(itemProdutos){
-        //verifica se o nomeProduto é igual a variavel nome
+        //verifica se o nome do produto é igual a variavel nome
         //toUpperCase torna as duas variaveis em maisculo para comparar os elementos
-        //nome é um atributo comum, então é possivel fazer um if de cara
+        //nome é um atributo comum que está dentro de um json, então é possivel fazer um if logo de cara
         if(String(itemProdutos.nome).toUpperCase() == String(nome).toUpperCase()){
             console.log(itemProdutos)
         } 
