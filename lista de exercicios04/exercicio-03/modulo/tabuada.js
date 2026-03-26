@@ -15,13 +15,14 @@ const validarDados = function (tabuadaInicial, tabuadaFinal) {
         //não permite a entrada de letras ou caracters
         return false
 
-    } else if (tabuadaInicial >= 2 && tabuadaInicial <= 100 && tabuadaFinal >= 2 && tabuadaFinal <= 100) {
+    } else if (tabuadaInicial <= 2 || tabuadaInicial >= 100 || tabuadaFinal <= 2 || tabuadaFinal >= 100) {
         //permite apenas numeros entre 2 e 100
         return false
     } else {
         //retorna true caso tudo acima esteja correto
         return true
     }
+
 }
 
 //função para realizar o calculo da tabuada
@@ -34,17 +35,11 @@ const gerarTabuada = function (tabuadaInicial, tabuadaFinal) {
 
     //verifica se a tabuada inicial é maior que a tabuada final
     if (tabuada <= tab) {
-        //enquanto o contador for entre 0 e 10 vcont++ (adicione mais 1)
+        //enquanto o contador for entre 0 e 10 cont++ (adicione mais 1)
         for (let cont1 = 1; cont1 <= tab; cont1++) {
 
-            for (let cont2 = tabuada; cont2 <= 10; cont2++) {
-
-                for (let cont3 = 1; cont3 <= 10; cont3++) {
-                    console.log("------------------------------------------------------")
-                    console.log(`${tabuada} x ${cont3} = ${tabuada * cont3}`);
-                    console.log("------------------------------------------------------")
-                }
-            }
+            console.log(`   ${tabuada} x ${cont1} = ${tabuada * cont1}`);
+            console.log("------------------------------------------")
         }
 
     }else {
@@ -52,4 +47,5 @@ const gerarTabuada = function (tabuadaInicial, tabuadaFinal) {
     }
 }
 
-gerarTabuada(3, 2)
+
+console.log(validarDados(2,100))

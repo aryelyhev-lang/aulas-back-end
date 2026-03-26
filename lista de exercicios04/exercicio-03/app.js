@@ -10,5 +10,5 @@ const calculoDaTabuada = require("./modulo/tabuada")
 
 
 let tabuadaInicial = "3"    //onde irá começar a tabuada
-let tabuadaFinal = "2"      //até que numero ele deve ir (vão ser criadas diversas tabuadas desde de o numero inicial ao numero final)
+let tabuadaFinal = "5"      //até que numero ele deve ir (vão ser criadas diversas tabuadas desde de o numero inicial ao numero final)
                             //ou seja, duas tabuada serão criadas
