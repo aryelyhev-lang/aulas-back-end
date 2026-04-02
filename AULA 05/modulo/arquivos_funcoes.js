@@ -3,7 +3,7 @@ const listaTodos = require("./estados_cidades")
 //função que recebe o paramentro com a lista de estados
 function getListaDeEstados() {
 
-    // pega o array de "estados" dentro do json
+    //pega o array de "estados" dentro do json
     const lstEstados = listaTodos.listaDeEstados.estados
 
     //variavel que guarda a estrutura do json para receber as uf's
@@ -28,15 +28,15 @@ function getListaDeEstados() {
     return resultado
 }
 
-/*
-função para exibir um estado por vez de forma detalhada
-o parametro uf é uma variavel que recebe o valor quando a função é chamada
-*/
+
+//função para exibir um estado por vez de forma detalhada
+//o parametro uf é uma variavel que recebe o valor quando a função é chamada
 function getDadosEstado(uf) {
 
     //constante que pega os estados dentro do json
     const estados = listaTodos.listaDeEstados.estados
     const nomeEstado = uf
+    let status = false
     let resultado = {
 
         uf: '',
@@ -53,21 +53,27 @@ function getDadosEstado(uf) {
         //condicional que compara a igualdade entre o elemento sigla com com a variavel nomeEstado
         if (String(estadoUf.sigla).toUpperCase() == String(nomeEstado).toUpperCase()) {
 
-            /* 
-            Adiciona os dados do "estados" demtro do objeto "resultado".
-            Cada propriedade (uf, descricao, capital, regiao) é um array,
-            então usamos o método "push" para inserir os valores do estado atual (variavel estadoUf)
-            push é ultilizado apenas em array
-            como estava antes resultado.uf.push(estadoUf.sigla) <- dessa forma o objeto teria que ser um array
-            */
+
+            //Adiciona os dados do "estados" demtro do objeto "resultado".
+            //Cada propriedade (uf, descricao, capital, regiao) é um array,
+            //então usamos o método "push" para inserir os valores do estado atual (variavel estadoUf)
+            //push é ultilizado apenas em array
+            //como estava antes resultado.uf.push(estadoUf.sigla) <- dessa forma o objeto teria que ser um array
+
             resultado.uf = estadoUf.sigla //dessa forma pode ser feito para objetos json's
             resultado.descricao = estadoUf.nome
             resultado.capital = estadoUf.capital
             resultado.regiao = estadoUf.regiao
+            status = true
         }
     })
 
-    return resultado
+    if (status) {
+        return resultado
+    } else {
+        return false
+    }
+
 }
 
 //função que retona uma capital do brasil com o criterio de filtro com UF
@@ -75,6 +81,7 @@ function getCapitalEstado(uf) {
 
     const estados = listaTodos.listaDeEstados.estados
     const nomeEstado = uf
+    let status = false
     let resultado = {
 
         //rstrutura de lista em um json
@@ -92,17 +99,21 @@ function getCapitalEstado(uf) {
             resultado.uf = estadosUf.sigla
             resultado.descricao = estadosUf.nome
             resultado.capital = estadosUf.capital
+            status = true
         }
     })
 
-    return resultado
+    if (status) {
+        return resultado
+    } else {
+        return false
+    }
 
 }
 
-/*
-retorna as informações de alguns estados, filtrado pela região
-exemplo: região sul (ele retornaria todos os estados da região sul)
-*/
+
+//retorna as informações de alguns estados, filtrado pela região
+//exemplo: região sul (ele retornaria todos os estados da região sul)
 function getEstadosRegiao(regiao) {
 
     const estados = listaTodos.listaDeEstados.estados
@@ -118,19 +129,18 @@ function getEstadosRegiao(regiao) {
     //contador que percorre o array "estados" da lista de estados
     estados.forEach(function (estadosRegiao) {
 
-        /*
-        condicional para validar a igualdade do valor guardado na variavel nomeDosEstados
-        com os atributos "regiao" dentro do json
-        */
+        //condicional para validar a igualdade do valor guardado na variavel nomeDosEstados
+        //com os atributos "regiao" dentro do json
+        console.log(nomeDosEstados)
+
         if (String(estadosRegiao.regiao).toUpperCase() == String(nomeDosEstados).toUpperCase()) {
 
             resultado.regiao = estadosRegiao.regiao
 
-            /* 
-            Estou adicionando um estado dentro do array "estados"
-            Uso um OBJETO porque "uf" e "descricao" pertencem ao mesmo estado
-            Assim eu mantenho os dados agrupados e evito depender de índice de array
-            */
+            //Estou adicionando um estado dentro do array "estados"
+            //Uso um OBJETO porque "uf" e "descricao" pertencem ao mesmo estado
+            //Assim eu mantenho os dados agrupados e evito depender de índice de array
+
 
             resultado.estados.push({
 
@@ -141,12 +151,11 @@ function getEstadosRegiao(regiao) {
                 descricao: estadosRegiao.nome
             });
 
-            /*
-            NÃO usar assim:
-            resultado.uf.push(...)
-            resultado.descricao.push(...)
-            Porque separa os dados e posso perder a relação entre eles (índice pode quebrar)
-            */
+
+            //NÃO usar assim:
+            //resultado.uf.push(...)
+            //resultado.descricao.push(...)
+            //Porque separa os dados e posso perder a relação entre eles (índice pode quebrar)
 
         }
     })
@@ -154,8 +163,8 @@ function getEstadosRegiao(regiao) {
     return resultado
 }
 
-/*
-retorna a lista de cidades filtrado pelo estado
+
+//retorna a lista de cidades filtrado pelo estado
 // function getCidades (estado) {
 
 //     const estados = listaDeEstados
@@ -174,13 +183,13 @@ retorna a lista de cidades filtrado pelo estado
 
 //     estados.forEach(function(estadoscidades){
 //         //contador para percorrer o array da lista de estados
-    
+
 //     })
 
- } 
-*/
+//} 
 
-function getCidades(filtroEstado){
+
+function getCidades(filtroEstado) {
     filtroEstado = filtroEstado.toUpperCase()
 
     let infoCidades = {
@@ -192,20 +201,51 @@ function getCidades(filtroEstado){
 
     listaTodos.listaDeEstados.estados.forEach(estado => {
 
-        if(filtroEstado == estado.sigla.toUpperCase()){
+        if (filtroEstado == estado.sigla.toUpperCase()) {
             infoCidades.uf = estado.sigla
             infoCidades.descricao = estado.nome
-           
+
             estado.cidades.forEach(cidade => {      //forEach pois é um array 
                 infoCidades.cidades.push(cidade.nome)
                 infoCidades.quantidade_cidades = infoCidades.quantidade_cidades + 1
             });
         }
     })
-       return infoCidades 
+    
+
+    return infoCidades
 }
-/*
-chama as funções
+
+//retorna as capitais do pais 
+const getCapitalPais = function () {
+
+    let capitalPais = []
+    let resultado = false
+    
+    listaTodos.listaDeEstados.estados.forEach(function (estado){
+
+        if (estado.capital_pais) {
+            
+            capitalPais.push({
+
+                capital_atual:   estado.capital_pais.capital,
+                uf:             estado.sigla,
+                descricao:      estado.nome,
+                capital:        estado.capital,
+                regiao:         estado.regiao,
+                ano_inicio:      estado.capital_pais.ano_inicio,
+                ano_fim:         estado.capital_pais.ano_fim
+            })
+
+            resultado = capitalPais
+        }
+    
+    })
+
+    return resultado
+}
+
+//chama as funções
 //ao chamar a função passa o parametro do uf "SP ou qualquer outra siglas"
 //sempre sembrar de passar o parametro quando chamar a função, não com uma variavel dentro da função
 //a variavel uf recebe o valor aribuido quando a função é chamada abaixo
@@ -214,7 +254,7 @@ chama as funções
 //console.log(getDadosEstado("sp")) //retorna o estado com algumas informações, filtrado pelo uf
 //console.log(getCapitalEstado("pe"))
 //console.log(getEstadosRegiao("norte"))
-*/
+
 
 
 module.exports = {
@@ -222,7 +262,8 @@ module.exports = {
     getDadosEstado,
     getCapitalEstado,
     getEstadosRegiao,
-    getCidades
+    getCidades,
+    getCapitalPais
 }
 
 
