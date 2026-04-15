@@ -52,9 +52,14 @@ const estadosCidades = require('./modulo/arquivos_funcoes.js')
 
 //endPoint que devolve true ou false
 //retona dados do estados filtrando pelo uf
-app.get('/v1/senai/dados/estado/:uf', function (request, response) {
+app.get('/v1/senai/dados/estado/', function (request, response) {
 
-    let sigla = request.params.uf
+    //query é usado quando é necessario passar mais de uma variavel na url
+    //tudo que fica depois da ? é considerado uma variavel
+    //tudo que fica depois do = é considerado o valor guardado na variaavel
+    //e o simbolo & é ultilizado para separar as variaveis na mesma url
+    //exemplo: /v1/senai/dados/estado/?uf=sudeste
+    let sigla = request.query.uf
     let estado = estadosCidades.getDadosEstado(sigla)
 
     //criando variavel como parametro (ela deve ficar entre as barras)
@@ -106,6 +111,11 @@ app.get('/v1/senai/estado/capital/brasil', function (request, response) {
 //retona dados do estado filtrando pela região 
 app.get('/v1/senai/estados/regiao/:nomeRegiao', function (request, response) {
 
+    //query é usado quando é necessario passar mais de uma variavel na url
+    //tudo que fica depois da ? é considerado uma variavel
+    //tudo que fica depois do = é considerado o valor guardado na variaavel
+    //e o simbolo & é ultilizado para separar as variaveis na mesma url
+    //exemplo: /v1/senai/estados/regiao/?uf=pe
     let nomeDaRegiao = request.params.nomeRegiao
     let regiaoEstado = estadosCidades.getEstadosRegiao(nomeDaRegiao);
 
