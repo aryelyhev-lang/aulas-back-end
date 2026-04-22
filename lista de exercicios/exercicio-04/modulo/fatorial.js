@@ -15,6 +15,7 @@ const validarDados = function(numeroFatorial){
         //não permite numeros entre 1 e 0
         return false
     } else {
+        
         //retorna true caso tudo acima esteja correto
         return true
     }
@@ -22,6 +23,15 @@ const validarDados = function(numeroFatorial){
 }
 
 //função responsavel por realizar o calculo
-const calcularFatorial = function(){
+const calcularFatorial = function(numeroFatorial){
+
+    for (let cont = numeroFatorialFatorial; cont > 1; cont--) {
+
+        resultado *= cont;
+    }
+
+    return resultado;
 
 }
+    
+console.log(calcularFatorial(6)); // Saída: 120

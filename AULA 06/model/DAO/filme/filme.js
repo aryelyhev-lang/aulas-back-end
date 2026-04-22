@@ -20,35 +20,47 @@ const knexConex = knex(knexConfig.development)
 //função responsavel por inserir dados na tabela de filmes
 const insertFilme = async function(filme){
 
-    //variavel responsável por inserir um novo registro na tabela "tbl_filme"
-    //usando os valores das propriedades do objeto "filme".
-    let sql = `insert into tbl_filme (
-						nome, 
-                        data_lancamento, 
-                        duracao, 
-                        sinopse, 
-                        avaliacao, 
-                        valor, 
-                        capa
-                        )
-				values (
-						'${filme.nome}',
-                        '${filme.data_lancamento}', 
-                        '${filme.duracao}',
-                        '${filme.sinopse}',
-                        '${filme.avaliacao}',
-                        '${filme.valor}',
-                        '${filme.capa}'
-                        );`
+    //estrutura do try catch -> mantem a aoi funcionano mesmo que envontre um erro
+    //tudo que está dentro do try é a api
+    try {
 
-    // execulta o scriptSQL no banco de dados 
-    // await -> aguarde a resposta/devolutiva do banco
-    let result = await knexConex.raw(sql)
+        //variavel responsável por inserir um novo registro na tabela "tbl_filme"
+        //usando os valores das propriedades do objeto "filme".
+        let sql = `insert into tbl_filme (
+                            nome, 
+                            data_lancamento, 
+                            duracao, 
+                            sinopse, 
+                            avaliacao, 
+                            valor, 
+                            capa
+                            )
+                    values (
+                            '${filme.nome}',
+                            '${filme.data_lancamento}', 
+                            '${filme.duracao}',
+                            '${filme.sinopse}',
+                            if('${filme.avaliacao}' = '', null, '${filme.avaliacao}'), 
+                            '${filme.valor}',
+                            '${filme.capa}'
+                            );`
+                
+        //o if do avaliação vem do my sql e permite que 0 seja igual a null 
 
-    if (result)
-        return true
-    else 
-        return false
+        // execulta o scriptSQL no banco de dados 
+        // await -> aguarde a resposta/devolutiva do banco
+        let result = await knexConex.raw(sql)
+
+        if (result)
+            return true
+        else 
+            return false //banco de dados rejeita
+
+        } catch (error) {   //fechamento do try catch
+            return false    //rejeita caso tenha algum bug na aplicação
+                            //sempre que der um bug no DAO, dar um console.log na variavel error do trycatch
+            
+        }
 }
 
 //função responsavel por atualizar um filme existente na tabela

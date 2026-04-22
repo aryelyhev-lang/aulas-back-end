@@ -13,19 +13,21 @@ const filmeDAO = require('../../model/DAO/filme/filme.js')
 
 //sempre criar as funções da controller com base nas funções criadas no DAO (para facilitar o entendimento)
 //função responsavel por inserir um novo filme
-const inserirNovoFilme = async function(filme){
 
-//essa função irá receber um json que vem do app
-//com base nisso, espera-se que a nomenclatura seja igual a nomenclatura estabelecida no scriptSQL
+//contentType vem do request heraders -> mostra qual é o tipo de dados vindo da requisição
+const inserirNovoFilme = async function (filme, contentType) {
 
-/*  id 					int not null primary key auto_increment,
-    nome				varchar(80) not null,
-    data_lancamento		date not null,
-    duracao				time not null,
-    sinopse				text not null,
-    avaliacao			decimal(3,2) default null,
-    valor				decimal(5,2) not null default 0,
-    capa				varchar(255) */
+    //essa função irá receber um json que vem do app
+    //com base nisso, espera-se que a nomenclatura seja igual a nomenclatura estabelecida no scriptSQL
+
+    /*  id 					int not null primary key auto_increment,
+        nome				varchar(80) not null,
+        data_lancamento		date not null,
+        duracao				time not null,
+        sinopse				text not null,
+        avaliacao			decimal(3,2) default null,
+        valor				decimal(5,2) not null default 0,
+        capa				varchar(255) */
 
     //Criando um clone do objeto json para manipular a sua estrutura local sem modificar a estrutura original
     //JSON.pars -> converte uma string no formato JSON em um objeto/valor JavaScript
@@ -35,72 +37,114 @@ const inserirNovoFilme = async function(filme){
     //variavel, ambas teriam o mesmo endereço, ou seja, tudo que fosse
     //alterado em uma seria alterado na outra
 
-    //validação com base nos dados acima com um return que possui uma menssagem direcionada
-    //Validação dos dados para os atributos do filme (status 400)
-    if(filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80){
-        //filme.nome.length > 80 = se a quantidade(length) de caracters do filme.nome for maior que 80
-        message.ERRO_BAD_REQUEST.field = '[NOME] INVÁLIDO'
+    try {
 
-    }else if(filme.data_lancamento == '' || filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10){
-        //filme.data_lancamento.length != 10 -> se a data for diferente de 10 caracters
-        message.ERRO_BAD_REQUEST.field = '[DATA_LANCAMENTO] INVÁLIDO'
+        //VALIDAÇÃO PARA O TIPO DE DADOS DA REQUISIÇÃO (somente json)
+        //não aceita xml ou text no formato de dados da requisição 
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-    }else if(filme.duracao == '' || filme.duracao == null || filme.duracao == undefined || filme.duracao.length < 5){
-        message.ERRO_BAD_REQUEST.field = '[DURAÇÃO] INVÁLIDO'
+            let validar = await validarDados(filme)
 
-    }else if(filme.sinopse == '' || filme.sinopse == null || filme.sinopse == undefined){
-        message.ERRO_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
+            //se a função validarDados retornar um json de eros, iremos devolver  ao APP o erro
+            if (validar) {
+                return validar //erro 400
 
-    }else if(isNaN(filme.avaliacao) || filme.avaliacao.length > 3){
-        message.ERRO_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
+            } else {
+                //caso a requisição esteja com tudo certo, ele ignora os comandos acima e entra aqui direto
+                //encaminha os dados do filme para o DAO
+                let result = await filmeDAO.insertFilme(filme)
 
-    }else if(filme.valor == '' || filme.valor == null || filme.valor == undefined || filme.valor.length > 5 || isNaN(filme.valor)){
-        message.ERRO_BAD_REQUEST.field = '[VALOR] INVÁLIDO'
+                //valida se o result deu certo ou não
+                if (result) {
+                    //201 = se inserir no banco volta true e imprime essa menssagem
+                    message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATE_ITEM.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATE_ITEM.status_code
+                    message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATE_ITEM.message
+                } else {
+                    //500 = erro no servidor (erro na model)
+                    return message.ERRO_INTERNAL_SERVER_MODEL
+                }
 
-    }else if(filme.capa.length > 255){
-        message.ERRO_BAD_REQUEST.field = '[CAPA] INVÁLIDO'
-    }else{
-        //caso a requisição esteja com tudo certo, ele ignora os comandos acima e entra aqui direto
-        let result = await filmeDAO.insertFilme(filme)
-        //valida se o result deu certo ou não
-        if(result){
-            //201
-            message.DEFAULT_MESSAGE.status      =   message.SUCCESS_CREATE_ITEM.status
-            message.DEFAULT_MESSAGE.status_code =   message.SUCCESS_CREATE_ITEM.status_code
-            message.DEFAULT_MESSAGE.message     =   message.SUCCESS_CREATE_ITEM.message
-        }else{
-            //404
-            message.DEFAULT_MESSAGE.status      =   message.ERRO_BAD_REQUEST.status
-            message.DEFAULT_MESSAGE.status_code =   message.ERRO_BAD_REQUEST.status_code
-            message.DEFAULT_MESSAGE.message     =   message.ERRO_BAD_REQUEST.message
-            message.DEFAULT_MESSAGE.field       =   message.ERRO_BAD_REQUEST.field
+                return message.DEFAULT_MESSAGE
+            }
+
+        } else {
+            //tratamemto de tipo de dados do hearder request
+            return message.ERRO_CONTENT_TYPE //erro 415
         }
 
-        return message.DEFAULT_MESSAGE
+    } catch (error) {
+        //retorna um json para o app pois ele não sabe o que é false
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 (controller)
     }
-    
+
 }
 
 //função responsavel por atualizar um filme
-const atualizarFilme = async function(){
+const atualizarFilme = async function () {
 
 }
 
 //função responsavel por retornar todos os filmes
-const listarFilme = async function(){
+const listarFilme = async function () {
 
 }
 
 //função responsavel por buscar um filme pelo ID
-const buscarFilme = async function(){
+const buscarFilme = async function () {
 
 }
 
 //função responsavel por excluir um filme 
-const excluirFilme = async function(){
+const excluirFilme = async function () {
+
+}
+
+//função responsavel por validar todos os dados do filme
+//campos obrigatorios, qntde de caracters
+const validarDados = async function (filme) {
+
+    //cria um clone da const de mens
+    let message = JSON.parse(JSON.stringify(config_message))
+
+    //validação com base nos dados acima com um return que possui uma menssagem direcionada
+    //Validação dos dados para os atributos do filme (status 400)
+    if (filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80) {
+        //filme.nome.length > 80 = se a quantidade(length) de caracters do filme.nome for maior que 80
+        message.ERRO_BAD_REQUEST.field = '[NOME] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST
+
+    } else if (filme.data_lancamento == '' || filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10) {
+        //filme.data_lancamento.length != 10 -> se a data for diferente de 10 caracters
+        message.ERRO_BAD_REQUEST.field = '[DATA_LANCAMENTO] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST
+
+    } else if (filme.duracao == '' || filme.duracao == null || filme.duracao == undefined || filme.duracao.length < 5) {
+        message.ERRO_BAD_REQUEST.field = '[DURAÇÃO] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST
+
+    } else if (filme.sinopse == '' || filme.sinopse == null || filme.sinopse == undefined) {
+        message.ERRO_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST
+
+    } else if (isNaN(filme.avaliacao) || filme.avaliacao.length > 3) {
+        message.ERRO_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST
+
+    } else if (filme.valor == '' || filme.valor == null || filme.valor == undefined || filme.valor.split('.')[0].length > 3 || isNaN(filme.valor)) {
+        //filme.valor.split('.') -> pega o elemento . e separa o valor em um array, ou seja, o valor que era 100.50, se torna um array de 1000 (indice 0) e 50(indice 1)
+        message.ERRO_BAD_REQUEST.field = '[VALOR] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST
+
+    } else if (filme.capa.length > 255) {
+        message.ERRO_BAD_REQUEST.field = '[CAPA] INVÁLIDO'
+        return message.ERRO_BAD_REQUEST //retorna o problema em especifico
+    } else {
+        return false //mostra que nada estava com problema
+    }
 
 }
 
 module.exports = {
-    inserirNovoFilme, 
+    inserirNovoFilme,
 }
