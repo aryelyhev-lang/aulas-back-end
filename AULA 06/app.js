@@ -28,7 +28,10 @@ const corsOpitons = {
 
 app.use(cors(corsOpitons))
 
-//ENDPOINTS
+//ENDPOINTS             -> sempre escrever todas as assinaturas iguais entre get, post, select e delete
+//exemplo de assinatura -> /v1/senai/locadora/filme 
+//o unico momento que a assinatura muda ou se diferencia, é quando se tem 2 ou mais enpoints com get
+
 //diz para o endpoint que ele terá como referencia o objeto que foi criado, ou seja o bodyParser
 app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, response){
 
@@ -40,6 +43,24 @@ app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, res
 
     response.status(result.status_code)
     response.json(result) 
+})
+
+app.get('/v1/senai/locadora/filme', async function(request, response){
+    
+    let result = await controllerFilme.listarFilme()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//tudo que é uma busca por ATRIBUTO chega via QUERY (exemplo: nome, cidade, estado)
+//todo identificador ID é SEMPRE chega via parametro (só vem via parametro quando é id)
+app.get('/v1/senai/locadora/filme/:id', async function(request, response){
+    let id          = request.params.id
+    let result      = await controllerFilme.buscarFilme(id) //manda o id para a controller fazer a validação
+
+    response.status(result.status_code)
+    response.json(result)
 })
 
 app.listen(8080, function () {

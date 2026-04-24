@@ -63,6 +63,8 @@ const insertFilme = async function(filme){
         }
 }
 
+
+
 //função responsavel por atualizar um filme existente na tabela
 const updadeFilme = async function(filme){
 
@@ -70,12 +72,50 @@ const updadeFilme = async function(filme){
 
 //função responsavel por retornar todos os dados da tabela de filme
 const selectAllFilme = async function(){
+    try {
+        //select * from_nomeDaTbl   -> seleciona todos os elementos da lista (retorna todos os filmes) 
+        //oder by                   -> troca a ordem da lista por id
+        //id desc                   -> id em ordem decrescente
+        let sql     = `select * from tbl_filme order by id desc` 
 
+        //execulta no banco de dados do script SQL para retornar os filmes
+        let result  = await knexConex.raw(sql) 
+    
+        //aciona a classe array e chama o metodo isarray
+        //para ele responder se o result é um array ou não (retorna um boleano)
+        //se o script SQL der erro, o banco NÃO devolve um array
+        //verificar se o knex retornou um array
+        if(Array.isArray(result)){
+            return result[0]
+        }else{
+            return false
+        }
+
+
+    } catch (error) {
+        return false
+    }
 } 
+
 
 //função responsavel por retornar os dados do filme filtrando pelo id
 const selectByIdFilme = async function(id){
+    try {
+        //select where -> buscar o filme pelo id
+        let sql = `select * from tbl_filme where id=${id}`
 
+        //execulta o knex
+        let result = await knexConex.raw(sql)
+
+        if(Array.isArray(result)){
+            return result[0]
+        }else{
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
 }
 
 //função responsavel por excluir um filme pelo id
@@ -105,4 +145,11 @@ module.exports = {
       - read é select 
       - updade continua sendo update
       - delete continua como delete
+
+      GET 
+
+      200 -> tem dados (tudo okay)
+      404 -> não tem dados
+      500 -> erro na controller ou model
+      400 -> requisição errada por parte do front
  */

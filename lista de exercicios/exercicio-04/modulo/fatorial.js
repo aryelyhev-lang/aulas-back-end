@@ -1,37 +1,40 @@
 //arquivo responsavel por calcular o fatorial de um numero
 
 //função responsavel por validar os dados
-const validarDados = function(numeroFatorial){
+const validarDados = function(numeroFatorial) {
 
-    if (numeroFatorial == "") {
-        //proibe a entrada de campos vazios
-        return false
-
-    } else if (!isNaN(numeroFatorial)) {
-        //não permite a entrada de letras ou caracters
-        return false
-
-    } else if (numeroFatorial <= 1) {
-        //não permite numeros entre 1 e 0
-        return false
-    } else {
-        
-        //retorna true caso tudo acima esteja correto
-        return true
+    if (numeroFatorial === "") {
+        return false;
+    } 
+    // Se NÃO for apenas números, retorna falso
+    else if (!/^\d+$/.test(numeroFatorial)) {
+        return false;
+    } 
+    // Se for menor que 0, retorna falso
+    else if (Number(numeroFatorial) < 0) {
+        return false;
     }
 
+    return true;
 }
 
-//função responsavel por realizar o calculo
-const calcularFatorial = function(numeroFatorial){
+//função responsavel por realizar o calculo do fatorial
+const calcularFatorial = function(numeroFatorial) {
+    let fatorial = Number(numeroFatorial);
+    let resultado = 1;
 
-    for (let cont = numeroFatorialFatorial; cont > 1; cont--) {
-
+    for (let cont = fatorial; cont > 1; cont--) {
         resultado *= cont;
     }
 
     return resultado;
-
 }
-    
-console.log(calcularFatorial(6)); // Saída: 120
+
+let entrada = "ss"; // Simulação de entrada do usuário
+
+if (validarDados(entrada)) {
+    console.log(calcularFatorial(entrada));
+} else {
+    console.log("Entrada inválida! O cálculo não foi realizado.");
+}
+
