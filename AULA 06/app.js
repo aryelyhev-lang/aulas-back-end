@@ -63,6 +63,30 @@ app.get('/v1/senai/locadora/filme/:id', async function(request, response){
     response.json(result)
 })
 
+
+ //existem dois verbos que representam o atualizar (put e patch)
+ //put    -> altera todos os dados (faz um update geral)
+ //patch  -> altera algo especifico
+app.put('/v1/senai/locadora/filme/:id', bodyParserJson, async function(request, response){
+
+    //variavel que recebe o contentType da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+
+    //recebe os dados enviados no corpo da requisição
+    let dados = request.body
+
+    //chama a função de atualizar na controller e encaminha os dados, id e content type
+    //obedecendo a ordem de criação na funação da controller 
+    let result = await controllerFilme.atualizarFilme(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
 app.listen(8080, function () {
     console.log('Api funcionando e aguardando novas requisições ...')
 })

@@ -81,7 +81,59 @@ const inserirNovoFilme = async function (filme, contentType) {
 }
 
 //função responsavel por atualizar um filme
-const atualizarFilme = async function () {
+//como o id é uma chave primaria, ele deve vir por parametro
+const atualizarFilme = async function (filme, id, contentType) {
+
+    //clone da configMessage.js
+    let message = JSON.parse(JSON.stringify(config_message))
+
+    try {
+        //validação do contentType para receber apenas dados no formato json
+        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+            //validação para um ID incorreto
+            //chama a função que busca os filmes pelo id, lá ela valida se o id está correto e se ele existe
+            let resultBuscarId = await buscarFilme(id)
+
+            //Se a função buscar filme encontrar o filme, o atributo do JSON será verdadeiro 
+            //isso significa que o filme existe na base, caso não retorne true, então 
+            //o retono da função poderá ser um 400 ou 404 ou até mesmo 500
+            if(resultBuscarId.status){
+                let validar = await validarDados(filme)
+
+                //validação de campos obrigatorios para a atualização (dos elementos que vem dentro do body)
+                if(!validar){
+
+                    filme.id = id //adciono o atributo ID do filme dentro do json, para ser enviado ao DAO
+
+                    //chama a função do DAO para atualizar o filme (dados + o ID)
+                    let result = await filmeDAO.updadeFilme(filme)
+
+                    if(result){
+                        message.DEFAULT_MESSAGE.status          = message.SUCCESS_UPDATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_UPDATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message         = message.SUCCESS_UPDATE_ITEM.message
+
+                        return message.DEFAULT_MESSAGE //status code 200 -> representa que uma atualização foi feita com sucesso
+                        
+                    }else{
+                        return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 da model
+                    }
+
+                }else{
+                    return validar //erro 400
+                }
+
+            }else{
+                return resultBuscarId //retorna um erro 400, 404 ou 500 caso o status seja diferente de true
+            }
+            
+        }else{
+            return message.ERRO_CONTENT_TYPE //erro na content type 415
+        }
+
+    } catch (error) {
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
+    }
 
 }
 
@@ -213,5 +265,6 @@ const validarDados = async function (filme) {
 module.exports = {
     inserirNovoFilme,
     listarFilme,
-    buscarFilme
+    buscarFilme, 
+    atualizarFilme
 }

@@ -46,3 +46,7 @@ insert into tbl_filme (
 
 #seleciona uma tabela que já está criada e exibe os elementos cadastrados
 select * from tbl_filme;
+select * from tbl_filme order by id desc;
+
+#deleta todos os elementos dentro de uma tabela
+delete from tbl_filme where id > 0; 
