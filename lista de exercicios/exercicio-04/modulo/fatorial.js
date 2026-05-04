@@ -11,11 +11,13 @@ const validarDados = function(numeroFatorial) {
         return false;
     } 
     // Se for menor que 0, retorna falso
-    else if (Number(numeroFatorial) < 0) {
+    else if (Number(numeroFatorial) <= 1) {
         return false;
     }
 
+    console.log(numeroFatorial)
     return true;
+    
 }
 
 //função responsavel por realizar o calculo do fatorial
@@ -30,11 +32,4 @@ const calcularFatorial = function(numeroFatorial) {
     return resultado;
 }
 
-let entrada = "ss"; // Simulação de entrada do usuário
-
-if (validarDados(entrada)) {
-    console.log(calcularFatorial(entrada));
-} else {
-    console.log("Entrada inválida! O cálculo não foi realizado.");
-}
 
