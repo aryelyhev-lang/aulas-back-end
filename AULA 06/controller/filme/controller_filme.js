@@ -114,7 +114,7 @@ const atualizarFilme = async function (filme, id, contentType) {
                         message.DEFAULT_MESSAGE.message         = message.SUCCESS_UPDATE_ITEM.message
 
                         return message.DEFAULT_MESSAGE //status code 200 -> representa que uma atualização foi feita com sucesso
-                        
+
                     }else{
                         return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 da model
                     }
@@ -213,7 +213,7 @@ const buscarFilme = async function (id) {
 }
 
 //função responsavel por excluir um filme 
-const excluirFilme = async function () {
+const excluirFilme = async function (id) {
 
 }
 

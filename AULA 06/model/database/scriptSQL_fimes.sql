@@ -50,3 +50,21 @@ select * from tbl_filme order by id desc;
 
 #deleta todos os elementos dentro de uma tabela
 delete from tbl_filme where id > 0; 
+
+update tbl_filme set 
+	nome = 'filme 001',
+    data_lancamento = '2000-01-03',
+    duracao = '02:00',
+    sinopse = 'testando o update no banco de dados',
+    avaliacao = '2',
+	valor = '90',
+    capa = 'teste capa'
+where id = 21;
+
+show tables;
+
+#como deletar algo de uma lista pelo ID
+#DELETE FROM nome_da_tabela WHERE id = 10;
+delete from tbl_filme where id = 24;
+
+

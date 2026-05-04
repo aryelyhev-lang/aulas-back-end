@@ -11,6 +11,7 @@ const knex = require('knex')
 //import do arquivo de configuração para conexão do banco de dados mySQL
 const knexConfig = require('../../database_config_knex/knexFile.js')
 const { json } = require('body-parser')
+const { ERRO_BAD_REQUEST } = require('../../../controller/modulo/configMessages.js')
 
 //Criar a conexão com o banco de dados mySQL
 const knexConex = knex(knexConfig.development)
@@ -153,19 +154,15 @@ const deleteFilme = async function (id) {
         //busca um filme pelo id dentro da tabela de filmes
         let sql = `select * from tbl_filme where id=${id}`
 
-        if(sql){
+        //execulta o knex
+        let filme = await knexConex.raw(sql)
 
-            //se o id realmente existir dentro da tabela, ele exculta a proxima parte
-            //DELETE FROM nome_da_tabela 
-            //WHERE id = 10;
-            
-        }else{
-            //caso contrario return false 
-            // //status code que podem mandar é o 204
+        if (Array.isArray(filme)) {
+            return result[0]
+        } else {
             return false
         }
 
-    
    } catch (error) {
         return false
    }
