@@ -33,6 +33,7 @@ app.use(cors(corsOpitons))
 //o unico momento que a assinatura muda ou se diferencia, é quando se tem 2 ou mais enpoints com get
 
 //diz para o endpoint que ele terá como referencia o objeto que foi criado, ou seja o bodyParser
+//endpoint para inserir um filme
 app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, response){
 
     //recebe o conteúdo dentro do body da requisição
@@ -45,6 +46,7 @@ app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, res
     response.json(result) 
 })
 
+//endpoint para LISTAR todos os filmes
 app.get('/v1/senai/locadora/filme', async function(request, response){
     
     let result = await controllerFilme.listarFilme()
@@ -55,6 +57,7 @@ app.get('/v1/senai/locadora/filme', async function(request, response){
 
 //tudo que é uma busca por ATRIBUTO chega via QUERY (exemplo: nome, cidade, estado)
 //todo identificador ID é SEMPRE chega via parametro (só vem via parametro quando é id)
+//endpoint para BUSCAR um filme pelo id
 app.get('/v1/senai/locadora/filme/:id', async function(request, response){
     let id          = request.params.id
     let result      = await controllerFilme.buscarFilme(id) //manda o id para a controller fazer a validação
@@ -63,10 +66,20 @@ app.get('/v1/senai/locadora/filme/:id', async function(request, response){
     response.json(result)
 })
 
+//endpoint para DELETAR um filme pelo id
+app.delete('/v1/senai/locadora/filme/:id', async function(request, response){
+    let id = request.params.id //recebe o id do filme via parametro
+
+    let result = await controllerFilme.excluirFilme(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
  //existem dois verbos que representam o atualizar (put e patch)
  //put    -> altera todos os dados (faz um update geral)
  //patch  -> altera algo especifico
+ //endpoint para ATUALIZAR um filme pelo id
 app.put('/v1/senai/locadora/filme/:id', bodyParserJson, async function(request, response){
 
     //variavel que recebe o contentType da requisição

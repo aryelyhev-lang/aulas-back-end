@@ -26,10 +26,11 @@ const ERRO_NOT_FOUND                                = {status: false, status_cod
 
 
 //menssagens de sucesso da api 
+const SUCCESS_DELETED_ITEM                          = {status: true, status_code: 200, message: 'Registro excluido com sucesso!'}   //retorno para o delete (pode retornar um 200 ou 204)
 const SUCCESS_UPDATE_ITEM                           = {status: true, status_code: 200, message: 'Registro atualizado com sucesso!'} //status code de retorno para o PUT
-const SUCCESS_CREATE_ITEM                           = {status: true, status_code: 201, message: 'Registro inserido com sucesso'} //status code de retorno para GET
-const SUCCESS_RESPONSE                              = {status: true, status_code: 200}  //o status code 200 sempre vai servir para o response NO GET
-                                                                                        //não tem message porque ele devolve os dados solicitados do banco de dados
+const SUCCESS_CREATE_ITEM                           = {status: true, status_code: 201, message: 'Registro inserido com sucesso'}    //status code de retorno para GET
+const SUCCESS_RESPONSE                              = {status: true, status_code: 200}                                              //o status code 200 sempre vai servir para o response NO GET
+                                                                                                                                    //não tem message porque ele devolve os dados solicitados do banco de dados
 
 module.exports = {
     DEFAULT_MESSAGE,
@@ -39,6 +40,7 @@ module.exports = {
     ERRO_CONTENT_TYPE,
     ERRO_INTERNAL_SERVER_CONTROLLER,
     ERRO_NOT_FOUND,
-    SUCCESS_RESPONSE, 
+    SUCCESS_RESPONSE,
+    SUCCESS_DELETED_ITEM, 
     SUCCESS_UPDATE_ITEM
 }

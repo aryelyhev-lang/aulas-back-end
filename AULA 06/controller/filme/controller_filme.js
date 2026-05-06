@@ -180,7 +180,7 @@ const buscarFilme = async function (id) {
 
     try {
         //valida se o id está vazio ou se possui caracters
-        if(id == "" || id == null || id == undefined || isNaN(id)){
+        if(id == undefined || id == null || id == "" || isNaN(id)){
             message.ERRO_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERRO_BAD_REQUEST //erro 404
 
@@ -214,6 +214,34 @@ const buscarFilme = async function (id) {
 
 //função responsavel por excluir um filme 
 const excluirFilme = async function (id) {
+    //faz o import das menssagens de status code
+    let message = JSON.parse(JSON.stringify(config_message)) 
+
+    try {
+        //chama a função "buscarfilme" que já realiza a validação o ID 
+        //todas as validações que tiverem undefined, ele SEMPRE deve ser o primeiro
+        let resultBuscarId = await buscarFilme(id) //faz a validação do erro 400 e 404 dentro da função buscarfilme
+
+        //validção para verificar se o status é verdadeiro (se o filme/id existe)
+        if(resultBuscarId.status){
+            //chama a função do DAO para excluir o filme
+            let result = await filmeDAO.deleteFilme(id)
+
+            //validação do result que verifica se o id foi mesmo apagado
+            if(result){
+                return message.SUCCESS_DELETED_ITEM //200 (registro excluido com sucesso!)
+            }else{
+                return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 na model 
+            }
+
+        }else{
+            return resultBuscarId //caso dê erro, ele retorna o result com 400 ou 404
+        }
+       
+        
+    } catch (error) {
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
+    }
 
 }
 
@@ -226,21 +254,21 @@ const validarDados = async function (filme) {
 
     //validação com base nos dados acima com um return que possui uma menssagem direcionada
     //Validação dos dados para os atributos do filme (status 400)
-    if (filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80) {
+    if (filme.nome == undefined || filme.nome == null || filme.nome == "" || filme.nome.length > 80) {
         //filme.nome.length > 80 = se a quantidade(length) de caracters do filme.nome for maior que 80
         message.ERRO_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
 
-    } else if (filme.data_lancamento == '' || filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10) {
+    } else if (filme.data_lancamento == undefined || filme.data_lancamento == null || filme.data_lancamento == "" || filme.data_lancamento.length != 10) {
         //filme.data_lancamento.length != 10 -> se a data for diferente de 10 caracters
         message.ERRO_BAD_REQUEST.field = '[DATA_LANCAMENTO] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
 
-    } else if (filme.duracao == '' || filme.duracao == null || filme.duracao == undefined || filme.duracao.length < 5) {
+    } else if (filme.duracao == undefined || filme.duracao == null || filme.duracao == "" || filme.duracao.length < 5) {
         message.ERRO_BAD_REQUEST.field = '[DURAÇÃO] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
 
-    } else if (filme.sinopse == '' || filme.sinopse == null || filme.sinopse == undefined) {
+    } else if (filme.sinopse == undefined || filme.sinopse == null || filme.sinopse == "") {
         message.ERRO_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
 
@@ -248,7 +276,7 @@ const validarDados = async function (filme) {
         message.ERRO_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
 
-    } else if (filme.valor == '' || filme.valor == null || filme.valor == undefined || filme.valor.split('.')[0].length > 3 || isNaN(filme.valor)) {
+    } else if (filme.valor == undefined || filme.valor == null || filme.valor == "" || filme.valor.split('.')[0].length > 3 || isNaN(filme.valor)) {
         //filme.valor.split('.') -> pega o elemento . e separa o valor em um array, ou seja, o valor que era 100.50, se torna um array de 1000 (indice 0) e 50(indice 1)
         message.ERRO_BAD_REQUEST.field = '[VALOR] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
@@ -266,5 +294,6 @@ module.exports = {
     inserirNovoFilme,
     listarFilme,
     buscarFilme, 
-    atualizarFilme
+    atualizarFilme,
+    excluirFilme
 }

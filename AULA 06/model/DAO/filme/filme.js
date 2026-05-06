@@ -62,7 +62,7 @@ const insertFilme = async function (filme) {
         console.log(error)
         //fechamento do try catch
         return false    //rejeita caso tenha algum bug na aplicação
-                        //sempre que der um bug no DAO, dar um console.log na variavel error do trycatch
+        //sempre que der um bug no DAO, dar um console.log na variavel error do trycatch
 
     }
 
@@ -150,22 +150,23 @@ const selectByIdFilme = async function (id) {
 //função responsavel por excluir um filme pelo id
 const deleteFilme = async function (id) {
 
-   try {
-        //busca um filme pelo id dentro da tabela de filmes
-        let sql = `select * from tbl_filme where id=${id}`
+    try {
+        //busca um filme pelo id dentro da tabela de filmes e faz o delete 
+        let sql = `delete from tbl_filme where id=${id}`
 
         //execulta o knex
-        let filme = await knexConex.raw(sql)
+        let result = await knexConex.raw(sql)
 
-        if (Array.isArray(filme)) {
-            return result[0]
+        //validação para verificar se o result é verdadeiro ou nãoh. 
+        if (result) {
+            return true
         } else {
             return false
         }
 
-   } catch (error) {
+    } catch (error) {
         return false
-   }
+    }
 
 }
 
@@ -198,4 +199,5 @@ module.exports = {
       404 -> não tem dados
       500 -> erro na controller ou model
       400 -> requisição errada por parte do front
+      204 -> significa que a requisição foi realizada com sucesso, porém não tem nada para devolver (muito utilizada em delete)
  */
