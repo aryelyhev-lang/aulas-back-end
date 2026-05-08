@@ -16,6 +16,34 @@ create table tbl_filme (
     capa				varchar(255)
 );
 
+create table tbl_pessoa (
+	id 					int not null primary key auto_increment,
+    nome				varchar(150) not null,
+    data_nascimento		date not null,
+	biografia			text,
+    foto				varchar(250),
+    sexo				varchar(15)
+);
+
+ALTER TABLE tbl_pessoa 
+	MODIFY COLUMN sexo VARCHAR(15) NOT NULL;
+
+insert into tbl_pessoa (
+    nome,				
+    data_nascimento,		
+	biografia,			
+    foto,				
+    sexo				
+) values (
+	'ana maria',
+    '2012-03-01',
+    'testando o insert ta tabela de pessoa',
+    'foto generica',
+    'feminino'
+);
+
+select * from tbl_pessoa;
+
 show tables;
 
 #insert -> inserir dados na tabela

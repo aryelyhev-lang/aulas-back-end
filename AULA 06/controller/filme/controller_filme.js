@@ -54,12 +54,15 @@ const inserirNovoFilme = async function (filme, contentType) {
                 //encaminha os dados do filme para o DAO
                 let result = await filmeDAO.insertFilme(filme)
 
+
                 //valida se o result deu certo ou não
                 if (result) {
                     //201 = se inserir no banco volta true e imprime essa menssagem
-                    message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATE_ITEM.status
-                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATE_ITEM.status_code
-                    message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATE_ITEM.message
+                    filme.id = result //criando o atributo ID no json do filme e colocando o id gerado após o inset
+                    message.DEFAULT_MESSAGE.status          = message.SUCCESS_CREATE_ITEM.status
+                    message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_CREATE_ITEM.status_code
+                    message.DEFAULT_MESSAGE.message         = message.SUCCESS_CREATE_ITEM.message
+                    message.DEFAULT_MESSAGE.response        = filme 
                 } else {
                     //500 = erro no servidor (erro na model)
                     return message.ERRO_INTERNAL_SERVER_MODEL
@@ -112,6 +115,7 @@ const atualizarFilme = async function (filme, id, contentType) {
                         message.DEFAULT_MESSAGE.status          = message.SUCCESS_UPDATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_UPDATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message         = message.SUCCESS_UPDATE_ITEM.message
+                        message.DEFAULT_MESSAGE.response        = filme 
 
                         return message.DEFAULT_MESSAGE //status code 200 -> representa que uma atualização foi feita com sucesso
 
