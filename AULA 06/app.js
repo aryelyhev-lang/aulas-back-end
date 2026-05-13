@@ -13,6 +13,7 @@ const bodyParser    = require('body-parser')
 //import das controllers do projeto 
 const controllerFilme = require('./controller/filme/controller_filme.js')
 const controllerPessoa = require('./controller/pessoa/controller_pessoa.js')
+const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
 
 //criando um objeto para manipular dados do body da API em formato JSON 
 const bodyParserJson = bodyParser.json()
@@ -113,6 +114,51 @@ app.post('/v1/senai/locadora/cadastro', bodyParserJson, async function(request, 
      response.status(result.status_code)
      response.json(result) 
 })
+
+//---------------------->inicia os endpoints da tabela CLASSIFICAÇÃO<---------------------------------
+
+//inserir nova classificação
+app.post('/v1/senai/locadora/classificacao', bodyParserJson, async function(request, response){
+
+    let dados           = request.body
+    let contentType     = request.headers['content-type'] //recebe o content type da requisição para validar se é um json
+    let result          = await controllerClassificacao.inserirClassificacao(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result) 
+})
+
+//atualiza uma classificação já existente 
+app.put('/v1/senai/locadora/classificacao/:id', bodyParserJson, async function(request, response){
+
+    //variavel que recebe o contentType da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe o id do registro que será atualizado
+    let id = request.params.id
+
+    //recebe os dados enviados no corpo da requisição
+    let dados = request.body
+
+    //chama a função de atualizar na controller e encaminha os dados, id e content type
+    //obedecendo a ordem de criação na funação da controller 
+    let result = await controllerClassificacao.atualizarClassificacao(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+//busca uma classificação pelo id
+app.get('/v1/senai/locadora/classificacao/:id', async function(request, response){
+
+    let id          = request.params.id
+    let result      = await controllerClassificacao.buscarClassificacao(id) //manda o id para a controller fazer a validação
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 
 app.listen(8080, function () {
     console.log('Api funcionando e aguardando novas requisições ...')
