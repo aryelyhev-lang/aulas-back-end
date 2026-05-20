@@ -11,9 +11,10 @@ const cors          = require('cors')
 const bodyParser    = require('body-parser')
 
 //import das controllers do projeto 
-const controllerFilme = require('./controller/filme/controller_filme.js')
-const controllerPessoa = require('./controller/pessoa/controller_pessoa.js')
-const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
+const controllerFilme               = require('./controller/filme/controller_filme.js')
+const controllerPessoa              = require('./controller/pessoa/controller_pessoa.js')
+const controllerClassificacao       = require('./controller/classificacao/controller_classificacao.js')
+const controllersexo                = require('./controller/sexo/controller_sexo.js')
 
 //criando um objeto para manipular dados do body da API em formato JSON 
 const bodyParserJson = bodyParser.json()
@@ -30,11 +31,12 @@ const corsOpitons = {
 
 app.use(cors(corsOpitons))
 
+
 //ENDPOINTS             -> sempre escrever todas as assinaturas iguais entre get, post, select e delete
 //exemplo de assinatura -> /v1/senai/locadora/filme 
 //o unico momento que a assinatura muda ou se diferencia, é quando se tem 2 ou mais enpoints com get
 
-//-------------------------->inicia os endpoints da tabela FILME <------------------------------------
+//--------------------------->inicia os endpoints da tabela FILME<----------------------------------
 //diz para o endpoint que ele terá como referencia o objeto que foi criado, ou seja o bodyParser
 //endpoint para inserir um filme
 app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, response){
@@ -104,7 +106,8 @@ app.put('/v1/senai/locadora/filme/:id', bodyParserJson, async function(request, 
 })
 
 
-//---------------------->inicia os endpoints da tabela CADASTRO<---------------------------------
+
+//-------------------------->inicia os endpoints da tabela CADASTRO<----------------------------------
 app.post('/v1/senai/locadora/cadastro', bodyParserJson, async function(request, response){
 
      let dados           = request.body
@@ -115,8 +118,9 @@ app.post('/v1/senai/locadora/cadastro', bodyParserJson, async function(request, 
      response.json(result) 
 })
 
-//---------------------->inicia os endpoints da tabela CLASSIFICAÇÃO<---------------------------------
 
+
+//-------------------------->inicia os endpoints da tabela CLASSIFICAÇÃO<------------------------------
 //inserir nova classificação
 app.post('/v1/senai/locadora/classificacao', bodyParserJson, async function(request, response){
 
@@ -159,6 +163,50 @@ app.get('/v1/senai/locadora/classificacao/:id', async function(request, response
     response.json(result)
 })
 
+//endpoint para LISTAR todas as classificações
+app.get('/v1/senai/locadora/classificacao', async function(request, response){
+    
+    let result = await controllerClassificacao.listarClassificacao()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//endpoint para DELETAR um filme pelo id
+app.delete('/v1/senai/locadora/classificacao/:id', async function(request, response){
+    let id = request.params.id //recebe o id da classificação via parametro
+
+    let result = await controllerClassificacao.excluirClassificacao(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+//-------------------------->inicia os endpoints da tabela SEXO<------------------------------
+app.post('/v1/senai/locadora/sexo', bodyParserJson, async function(request, response){
+
+    //recebe o conteúdo
+    let dados           = request.body
+    let contentType     = request.headers['content-type'] //recebe o content type da requisição para validar se é um json
+    let result          = await controllersexo.inserirNovoSexo(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result) 
+})
+
+app.put('/v1/senai/locadora/sexo/:id', bodyParserJson, async function(request, response){
+
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dados = request.body
+
+    let result = await controllersexo.atualizarSexo(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+    
+})
 
 app.listen(8080, function () {
     console.log('Api funcionando e aguardando novas requisições ...')

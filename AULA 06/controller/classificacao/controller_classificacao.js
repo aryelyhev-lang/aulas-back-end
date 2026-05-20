@@ -130,10 +130,39 @@ const atualizarClassificacao = async function (classificacao, id, contentType){
 }
 
 
-
-
 //Função responsavel por listar todas as classificações disponiveis
 const listarClassificacao = async function (){
+     //Criando um clone do objeto json para manipular a sua estrutura local sem modificar a estrutura original
+        let message = JSON.parse(JSON.stringify(config_message))
+    
+        try {
+            //chama a função do DAO para retornar a lista de todos os filmes
+            let result = await classificacaoDAO.selectAllClassificacao()
+    
+            //validação para verificar se o DAO conseguiu processar os dados
+            if (result) {
+                //verificando se existe conteudo no array
+                if (result.length > 0) {
+                    message.DEFAULT_MESSAGE.status                      = message.SUCCESS_RESPONSE.status
+                    message.DEFAULT_MESSAGE.status_code                 = message.SUCCESS_RESPONSE.status_code
+                    message.DEFAULT_MESSAGE.response.count              = result.length //retorna a quantidade de filmes dentro do banco de dados
+                    message.DEFAULT_MESSAGE.response.classificacao      = result
+                    
+                    return message.DEFAULT_MESSAGE //status code 200 vai ser retornado um cabeçalho com as informações da api
+                }else {
+                    return message.ERRO_NOT_FOUND //erro 404
+                }
+    
+            }else {
+                //retorna uma message status code 500 (erro na model)
+                return message.ERRO_INTERNAL_SERVER_MODEL
+            }
+    
+        } catch (error) {
+            console.log(error)
+            return message.ERRO_INTERNAL_SERVER_CONTROLLER
+            //retorna uma message status code 500 (erro na controller)
+        }
 
 }
 
@@ -160,7 +189,7 @@ const buscarClassificacao = async function (id){
                 if(result.length > 0 ){ //se o dao devolver um id maior do que 0
                     message.DEFAULT_MESSAGE.status          = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.filme  = result
+                    message.DEFAULT_MESSAGE.response.classificacao  = result
                     
                     return message.DEFAULT_MESSAGE //confirma que tudo deu certo (status code 200)
                 }else{
@@ -180,7 +209,35 @@ const buscarClassificacao = async function (id){
 
 
 //Função responsavel por excluir uma classificação 
-const excluirClassificacao = async function (){
+const excluirClassificacao = async function (id){
+    //faz o import das menssagens de status code
+    let message = JSON.parse(JSON.stringify(config_message)) 
+    
+    try {
+        //chama a função "buscarClassificacao" que já realiza a validação o ID 
+        //todas as validações que tiverem undefined, ele SEMPRE deve ser o primeiro
+        let resultBuscarId = await buscarClassificacao(id) //faz a validação do erro 400 e 404 dentro da função buscarfilme
+    
+        //validção para verificar se o status é verdadeiro (se o filme/id existe)
+        if(resultBuscarId.status){
+            //chama a função do DAO para excluir o filme
+            let result = await classificacaoDAO.deleteClassificacao(id)
+    
+            //validação do result que verifica se o id foi mesmo apagado
+            if(result){
+                return message.SUCCESS_DELETED_ITEM //200 (registro excluido com sucesso!)
+            }else{
+                 return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 na model 
+             }
+    
+        }else{
+            return resultBuscarId //caso dê erro, ele retorna o result com 400 ou 404
+         }
+           
+            
+    } catch (error) {
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
+    }
 
 }
 

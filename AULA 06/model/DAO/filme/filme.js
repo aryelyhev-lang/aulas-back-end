@@ -35,7 +35,8 @@ const insertFilme = async function (filme) {
                             sinopse, 
                             avaliacao, 
                             valor, 
-                            capa
+                            capa,
+                            id_classificacao
                             )
                     values (
                             '${filme.nome}',
@@ -44,8 +45,9 @@ const insertFilme = async function (filme) {
                             '${filme.sinopse}',
                             if('${filme.avaliacao}' = '', null, '${filme.avaliacao}'), 
                             '${filme.valor}',
-                            '${filme.capa}'
-                            );`
+                            '${filme.capa}',
+                            ${filme.id_classificacao} 
+                            );` //inserimos um novo atributo id_classificacao que representa o relacionamento entre as duas tabelas
 
         //o if do avaliação vem do my sql e permite que 0 seja igual a null 
 
@@ -82,8 +84,9 @@ const updadeFilme = async function (filme) {
             sinopse             = '${filme.sinopse}',
             avaliacao           = if('${filme.avaliacao}' = '', null, '${filme.avaliacao}'),
             valor               = '${filme.valor}',
-            capa                = '${filme.capa}'
-            where id            = ${filme.id}` //id é um atributo do tipo inteiro e por isso não precisa colocar entre aspas
+            capa                = '${filme.capa}',
+            id_classificacao    =  ${filme.id_classificacao} 
+            where id            =  ${filme.id}` //id é um atributo do tipo inteiro e por isso não precisa colocar entre aspas
 
 
         //execulta o script SQL do DB

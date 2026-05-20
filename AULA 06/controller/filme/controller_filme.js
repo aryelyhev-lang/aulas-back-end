@@ -11,9 +11,11 @@ const config_message = require('../modulo/configMessages.js')
 //import do arquivo DAO para fazer o CRUD do filme no banco de dados
 const filmeDAO = require('../../model/DAO/filme/filme.js')
 
+//import de arquivos da controller 
+const controller_classificacao = require('../classificacao/controller_classificacao.js')
+
 //sempre criar as funções da controller com base nas funções criadas no DAO (para facilitar o entendimento)
 //função responsavel por inserir um novo filme
-
 //contentType vem do request heraders -> mostra qual é o tipo de dados vindo da requisição
 const inserirNovoFilme = async function (filme, contentType) {
 
@@ -52,6 +54,7 @@ const inserirNovoFilme = async function (filme, contentType) {
             } else {
                 //caso a requisição esteja com tudo certo, ele ignora os comandos acima e entra aqui direto
                 //encaminha os dados do filme para o DAO
+                //chama o dao e manda o objeto
                 let result = await filmeDAO.insertFilme(filme)
 
 
@@ -155,6 +158,26 @@ const listarFilme = async function () {
         if (result) {
             //verificando se existe conteudo no array
             if (result.length > 0) {
+                
+                //NÃO ultilizar o for each para percorrer tabelas intermediarias (for each não tem await)
+                //for off é o mais recomendado para percorrer funções que tem async e await
+                //percorre o array de filmes cadastrados para identificar os dados da classificação
+                for (filme of result) {
+
+                    //solocita que a controller da classificação verifique o id que está guardado dentro do "filme" 
+                    //(trás todos os dados de id de uma classificação que está dentro de 1 filme)
+                    let resultClassificacao = await controller_classificacao.buscarClassificacao(filme.id_classificacao)
+
+                    //se o resultclassificação for verdadeiro (se ela foi encontrada)
+                    if(resultClassificacao.status){
+
+                        //cria um atributo 'classificação' no filme e adiciona os dados referente a classificação
+                        filme.classificacao = resultClassificacao.response.classificacao
+                        delete filme.id_classificacao //apaga o id_classificação do filme para não focar repetito
+
+                    }
+                }
+
                 message.DEFAULT_MESSAGE.status              = message.SUCCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code         = message.SUCCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count      = result.length //retorna a quantidade de filmes dentro do banco de dados
@@ -196,6 +219,23 @@ const buscarFilme = async function (id) {
             if(result){
 
                 if(result.length > 0 ){ //se o dao devolver um id maior do que 0
+
+                    for (filme of result) {
+
+                        //solocita que a controller da classificação verifique o id que está guardado dentro do "filme" 
+                        //(trás todos os dados de id de uma classificação que está dentro de 1 filme)
+                        let resultClassificacao = await controller_classificacao.buscarClassificacao(filme.id_classificacao)
+    
+                        //se o resultclassificação for verdadeiro (se ela foi encontrada)
+                        if(resultClassificacao.status){
+                            
+                            //cria um atributo 'classificação' no filme e adiciona os dados referente a classificação
+                            filme.classificacao = resultClassificacao.response.classificacao
+                            delete filme.id_classificacao //apaga o id_classificação do filme para não focar repetito
+    
+                        }
+                    }
+
                     message.DEFAULT_MESSAGE.status          = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.filme  = result
@@ -288,7 +328,12 @@ const validarDados = async function (filme) {
     } else if (filme.capa.length > 255) {
         message.ERRO_BAD_REQUEST.field = '[CAPA] INVÁLIDO'
         return message.ERRO_BAD_REQUEST //retorna o problema em especifico
-    } else {
+
+    } else if (filme.id_classificacao == undefined || filme.id_classificacao == null || filme.id_classificacao == "" ||  isNaN(filme.id_classificacao) || filme.id_classificacao <= 0){
+        //validação do id/FK classificação -> tbl_classificação que irá se relacionar com a tabela filme
+        message.ERRO_BAD_REQUEST.field = '[ID_CLASSIFICAÇÃO] INVÁLIDO'
+    
+    }else {
         return false //mostra que nada estava com problema
     }
 

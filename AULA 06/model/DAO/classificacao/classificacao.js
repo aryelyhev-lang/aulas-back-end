@@ -124,7 +124,23 @@ const selectByIdClassificacao = async function (id) {
 }
 
 const deleteClassificacao = async function (id) {
+    try {
+        //busca uma classificação pelo id dentro da tabela de classificação e faz o delete 
+        let sql = `delete from tbl_classificacao where id=${id}`
 
+        //execulta o knex
+        let result = await knexConex.raw(sql)
+
+        //validação para verificar se o result é verdadeiro ou nãoh. 
+        if (result) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
 }
 
 module.exports = {

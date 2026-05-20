@@ -25,7 +25,27 @@ create table tbl_pessoa (
     sexo				varchar(15)
 );
 
-ALTER TABLE tbl_pessoa 
+create table tbl_sexo (
+	id 					int not null primary key auto_increment,
+    sexo				varchar(15)
+);
+
+create table tbl_classificacao (
+	id 					int not null primary key auto_increment,
+	sigla				varchar(6),
+    descricao			varchar(250),
+    foto				varchar(250),
+    idade_minima		int
+);
+
+ALTER TABLE tbl_classificacao 
+	MODIFY COLUMN idade_minima INT NOT NULL;
+    
+SHOW COLUMNS FROM tbl_classificacao;
+ 
+ select * from tbl_classificacao;
+    
+ALTER TABLE tbl_pessoa
 	MODIFY COLUMN sexo VARCHAR(15) NOT NULL;
 
 insert into tbl_pessoa (
@@ -42,7 +62,29 @@ insert into tbl_pessoa (
     'feminino'
 );
 
+insert into tbl_classificacao (
+	sigla,				
+    descricao,			
+    foto,				
+    idade_minima
+    )values (
+	'+16',
+    'Menores de qualquer idade podem assistir se acompanhados ou com autorização assinada.',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7icF6L0mw99HI56gPdMIcvVHmAui48dG38w&s',
+    '16'
+);
+
+insert into tbl_sexo (
+    sexo				
+) values (
+    'feminino'
+);
+
 select * from tbl_pessoa;
+
+select * from tbl_sexo;
+
+select * from tbl_classificacao;
 
 show tables;
 
@@ -94,5 +136,8 @@ show tables;
 #como deletar algo de uma lista pelo ID
 #DELETE FROM nome_da_tabela WHERE id = 10;
 delete from tbl_filme where id = 24;
+
+#excluindo o atributi sexo da tabela pessoa
+ALTER TABLE tbl_pessoa DROP COLUMN sexo;
 
 
