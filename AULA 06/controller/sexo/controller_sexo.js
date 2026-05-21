@@ -71,9 +71,9 @@ const atualizarSexo = async function (sexo, id, contentType) {
     console.log(sexo)
 
     try {
-        
+
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
-              
+
             let resultBuscarId = await buscarSexo(id)
 
             if (resultBuscarId.status) {
@@ -85,17 +85,17 @@ const atualizarSexo = async function (sexo, id, contentType) {
 
                     let result = await sexoDAO.updadeSexo(sexo)
 
-                    
+
                     if (result) {
                         message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATE_ITEM.message
                         message.DEFAULT_MESSAGE.response = sexo
 
-                        return message.DEFAULT_MESSAGE 
+                        return message.DEFAULT_MESSAGE
 
                     } else {
-                        return message.ERRO_INTERNAL_SERVER_MODEL 
+                        return message.ERRO_INTERNAL_SERVER_MODEL
                     }
 
                 } else {
@@ -123,6 +123,41 @@ const listarSexo = async function () {
 
 //função responsavel por buscar po um sexo
 const buscarSexo = async function (id) {
+
+    let message = JSON.parse(JSON.stringify(config_message))
+
+    try {
+        //valida se o id está vazio ou se possui caracters
+        if (id == undefined || id == null || id == "" || isNaN(id)) {
+            message.ERRO_BAD_REQUEST.field = '[ID] INVÁLIDO'
+            return message.ERRO_BAD_REQUEST //erro 404
+
+        } else {
+           
+            let result = await sexoDAO.selectByIdSexo(id)
+
+            console.log(result)
+            if (result) {
+
+                if (result.length > 0) { //se o dao devolver um id maior do que 0
+                    message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
+                    message.DEFAULT_MESSAGE.response.classificacao = result
+
+                    return message.DEFAULT_MESSAGE //confirma que tudo deu certo (status code 200)
+                } else {
+                    return message.ERRO_NOT_FOUND //erro 404
+                }
+
+            } else {
+                return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 do DAO (model)
+            }
+
+        }
+    } catch (error) {
+        console.log(error)
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
+    }
 
 }
 

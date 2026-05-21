@@ -197,15 +197,25 @@ app.post('/v1/senai/locadora/sexo', bodyParserJson, async function(request, resp
 
 app.put('/v1/senai/locadora/sexo/:id', bodyParserJson, async function(request, response){
 
+    
     let contentType = request.headers['content-type']
     let id = request.params.id
     let dados = request.body
 
+    console.log(contentType)
     let result = await controllersexo.atualizarSexo(dados, id, contentType)
 
     response.status(result.status_code)
     response.json(result)
     
+})
+
+app.get('/v1/senai/locadora/sexo/:id', async function(request, response){
+    let id          = request.params.id
+    let result      = await controllersexo.buscarSexo(id) //manda o id para a controller fazer a validação
+
+    response.status(result.status_code)
+    response.json(result)
 })
 
 app.listen(8080, function () {

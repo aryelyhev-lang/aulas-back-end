@@ -44,7 +44,7 @@ const updadeSexo = async function (sexo){
     try {
         //script para atualizar os dados no banco de dados
         let sql = `update tbl_sexo set 
-            sexo                = '${sexo.sexo}',
+            sexo                = '${sexo.sexo}'
             where id            =  ${sexo.id}` //id é um atributo do tipo inteiro e por isso não precisa colocar entre aspas
 
 
@@ -68,6 +68,22 @@ const selectAllSexo = async function (){
 
 const selectByIdSexo = async function (id){
 
+    try {
+        //select where -> buscar o sexo pelo id
+        let sql = `select * from tbl_sexo where id=${id}`
+
+        //execulta o knex
+        let result = await knexConex.raw(sql)
+
+        if (Array.isArray(result)) {
+            return result[0]
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
 }
    
 const deleteSexo = async function (id) {
