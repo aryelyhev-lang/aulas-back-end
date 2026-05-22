@@ -13,6 +13,8 @@ const filmeDAO = require('../../model/DAO/filme/filme.js')
 
 //import de arquivos da controller 
 const controller_classificacao = require('../classificacao/controller_classificacao.js')
+const controller_filme_genero = require('./controller_filme_genero.js')
+const { insertFilmeGenero } = require('../../model/DAO/filme_genero/filme_genero.js')
 
 //sempre criar as funções da controller com base nas funções criadas no DAO (para facilitar o entendimento)
 //função responsavel por inserir um novo filme
@@ -60,12 +62,33 @@ const inserirNovoFilme = async function (filme, contentType) {
 
                 //valida se o result deu certo ou não
                 if (result) {
+
                     //201 = se inserir no banco volta true e imprime essa menssagem
                     filme.id = result //criando o atributo ID no json do filme e colocando o id gerado após o inset
-                    message.DEFAULT_MESSAGE.status          = message.SUCCESS_CREATE_ITEM.status
-                    message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_CREATE_ITEM.status_code
-                    message.DEFAULT_MESSAGE.message         = message.SUCCESS_CREATE_ITEM.message
-                    message.DEFAULT_MESSAGE.response        = filme 
+
+                    //manipulação de dados para inserir os generos do filme
+                    //estrutura de repetição para percorrer o array que vem dentro do filme, para assim pegar o genero guardado no array
+                    for (genero of filme.genero) { 
+                        //cria o objeto json com os ids do filme e do genero
+                        let filmeGenero = {
+                            "id_filme": filme.id,
+                            "id_genero": genero.id
+                    }
+                        //chama a controller do filmeGenero para inserir os ids
+                        //função que recebe o id do genero e o id do filme
+                        let resultInsertGenero = await controller_filme_genero.inserirNovoFilmeGenero(filmeGenero)
+                        
+                        //se o result insert genero for falso em algum momento
+                        if(!resultInsertGenero.status){
+                            return message.SUCCESS_CREATE_ITEM_WARNING //ERRO 201 com alerta de dados não inseridos
+                        }
+                    }
+
+                    message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATE_ITEM.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATE_ITEM.status_code
+                    message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATE_ITEM.message
+                    message.DEFAULT_MESSAGE.response = filme
+
                 } else {
                     //500 = erro no servidor (erro na model)
                     return message.ERRO_INTERNAL_SERVER_MODEL
@@ -95,7 +118,7 @@ const atualizarFilme = async function (filme, id, contentType) {
 
     try {
         //validação do contentType para receber apenas dados no formato json
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
             //validação para um ID incorreto
             //chama a função que busca os filmes pelo id, lá ela valida se o id está correto e se ele existe
             let resultBuscarId = await buscarFilme(id)
@@ -103,38 +126,38 @@ const atualizarFilme = async function (filme, id, contentType) {
             //Se a função buscar filme encontrar o filme, o atributo do JSON será verdadeiro 
             //isso significa que o filme existe na base, caso não retorne true, então 
             //o retono da função poderá ser um 400 ou 404 ou até mesmo 500
-            if(resultBuscarId.status){
+            if (resultBuscarId.status) {
                 let validar = await validarDados(filme)
 
                 //validação de campos obrigatorios para a atualização (dos elementos que vem dentro do body)
-                if(!validar){
+                if (!validar) {
 
                     filme.id = id //adciono o atributo ID do filme dentro do json, para ser enviado ao DAO
 
                     //chama a função do DAO para atualizar o filme (dados + o ID)
                     let result = await filmeDAO.updadeFilme(filme)
 
-                    if(result){
-                        message.DEFAULT_MESSAGE.status          = message.SUCCESS_UPDATE_ITEM.status
-                        message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_UPDATE_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message         = message.SUCCESS_UPDATE_ITEM.message
-                        message.DEFAULT_MESSAGE.response        = filme 
+                    if (result) {
+                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATE_ITEM.message
+                        message.DEFAULT_MESSAGE.response = filme
 
                         return message.DEFAULT_MESSAGE //status code 200 -> representa que uma atualização foi feita com sucesso
 
-                    }else{
+                    } else {
                         return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 da model
                     }
 
-                }else{
+                } else {
                     return validar //erro 400
                 }
 
-            }else{
+            } else {
                 return resultBuscarId //retorna um erro 400, 404 ou 500 caso o status seja diferente de true
             }
-            
-        }else{
+
+        } else {
             return message.ERRO_CONTENT_TYPE //erro na content type 415
         }
 
@@ -158,7 +181,7 @@ const listarFilme = async function () {
         if (result) {
             //verificando se existe conteudo no array
             if (result.length > 0) {
-                
+
                 //NÃO ultilizar o for each para percorrer tabelas intermediarias (for each não tem await)
                 //for off é o mais recomendado para percorrer funções que tem async e await
                 //percorre o array de filmes cadastrados para identificar os dados da classificação
@@ -169,26 +192,32 @@ const listarFilme = async function () {
                     let resultClassificacao = await controller_classificacao.buscarClassificacao(filme.id_classificacao)
 
                     //se o resultclassificação for verdadeiro (se ela foi encontrada)
-                    if(resultClassificacao.status){
+                    if (resultClassificacao.status) {
 
                         //cria um atributo 'classificação' no filme e adiciona os dados referente a classificação
                         filme.classificacao = resultClassificacao.response.classificacao
                         delete filme.id_classificacao //apaga o id_classificação do filme para não focar repetito
+                    }
 
+                    //Cria o objeto de generos relacionados ao filme
+                    let resultGenero = await controller_filme_genero.buscarGeneroIdFilme(filme.id)
+                    
+                    if(resultGenero.status){
+                        filme.genero = resultGenero.response.filme_genero
                     }
                 }
 
-                message.DEFAULT_MESSAGE.status              = message.SUCCESS_RESPONSE.status
-                message.DEFAULT_MESSAGE.status_code         = message.SUCCESS_RESPONSE.status_code
-                message.DEFAULT_MESSAGE.response.count      = result.length //retorna a quantidade de filmes dentro do banco de dados
-                message.DEFAULT_MESSAGE.response.filme      = result
-                
+                message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
+                message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
+                message.DEFAULT_MESSAGE.response.count = result.length //retorna a quantidade de filmes dentro do banco de dados
+                message.DEFAULT_MESSAGE.response.filme = result
+
                 return message.DEFAULT_MESSAGE //status code 200 vai ser retornado um cabeçalho com as informações da api
-            }else {
+            } else {
                 return message.ERRO_NOT_FOUND //erro 404
             }
 
-        }else {
+        } else {
             //retorna uma message status code 500 (erro na model)
             return message.ERRO_INTERNAL_SERVER_MODEL
         }
@@ -203,49 +232,49 @@ const listarFilme = async function () {
 //função responsavel por buscar um filme pelo ID
 const buscarFilme = async function (id) {
 
-    let message = JSON.parse(JSON.stringify(config_message)) 
+    let message = JSON.parse(JSON.stringify(config_message))
 
     try {
         //valida se o id está vazio ou se possui caracters
-        if(id == undefined || id == null || id == "" || isNaN(id)){
+        if (id == undefined || id == null || id == "" || isNaN(id)) {
             message.ERRO_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERRO_BAD_REQUEST //erro 404
 
-        }else{
+        } else {
             // Busca no banco de dados um filme específico pelo ID informado
             // Executa uma operação assíncrona para recuperar os dados do filme com base no ID
             let result = await filmeDAO.selectByIdFilme(id)
 
-            if(result){
+            if (result) {
 
-                if(result.length > 0 ){ //se o dao devolver um id maior do que 0
+                if (result.length > 0) { //se o dao devolver um id maior do que 0
 
                     for (filme of result) {
 
                         //solocita que a controller da classificação verifique o id que está guardado dentro do "filme" 
                         //(trás todos os dados de id de uma classificação que está dentro de 1 filme)
                         let resultClassificacao = await controller_classificacao.buscarClassificacao(filme.id_classificacao)
-    
+
                         //se o resultclassificação for verdadeiro (se ela foi encontrada)
-                        if(resultClassificacao.status){
-                            
+                        if (resultClassificacao.status) {
+
                             //cria um atributo 'classificação' no filme e adiciona os dados referente a classificação
                             filme.classificacao = resultClassificacao.response.classificacao
                             delete filme.id_classificacao //apaga o id_classificação do filme para não focar repetito
-    
+
                         }
                     }
 
-                    message.DEFAULT_MESSAGE.status          = message.SUCCESS_RESPONSE.status
-                    message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.filme  = result
-                    
+                    message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
+                    message.DEFAULT_MESSAGE.response.filme = result
+
                     return message.DEFAULT_MESSAGE //confirma que tudo deu certo (status code 200)
-                }else{
+                } else {
                     return message.ERRO_NOT_FOUND //erro 404
                 }
 
-            }else{
+            } else {
                 return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 do DAO (model)
             }
 
@@ -259,7 +288,7 @@ const buscarFilme = async function (id) {
 //função responsavel por excluir um filme 
 const excluirFilme = async function (id) {
     //faz o import das menssagens de status code
-    let message = JSON.parse(JSON.stringify(config_message)) 
+    let message = JSON.parse(JSON.stringify(config_message))
 
     try {
         //chama a função "buscarfilme" que já realiza a validação o ID 
@@ -267,22 +296,22 @@ const excluirFilme = async function (id) {
         let resultBuscarId = await buscarFilme(id) //faz a validação do erro 400 e 404 dentro da função buscarfilme
 
         //validção para verificar se o status é verdadeiro (se o filme/id existe)
-        if(resultBuscarId.status){
+        if (resultBuscarId.status) {
             //chama a função do DAO para excluir o filme
             let result = await filmeDAO.deleteFilme(id)
 
             //validação do result que verifica se o id foi mesmo apagado
-            if(result){
+            if (result) {
                 return message.SUCCESS_DELETED_ITEM //200 (registro excluido com sucesso!)
-            }else{
+            } else {
                 return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 na model 
             }
 
-        }else{
+        } else {
             return resultBuscarId //caso dê erro, ele retorna o result com 400 ou 404
         }
-       
-        
+
+
     } catch (error) {
         return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
     }
@@ -329,11 +358,11 @@ const validarDados = async function (filme) {
         message.ERRO_BAD_REQUEST.field = '[CAPA] INVÁLIDO'
         return message.ERRO_BAD_REQUEST //retorna o problema em especifico
 
-    } else if (filme.id_classificacao == undefined || filme.id_classificacao == null || filme.id_classificacao == "" ||  isNaN(filme.id_classificacao) || filme.id_classificacao <= 0){
+    } else if (filme.id_classificacao == undefined || filme.id_classificacao == null || filme.id_classificacao == "" || isNaN(filme.id_classificacao) || filme.id_classificacao <= 0) {
         //validação do id/FK classificação -> tbl_classificação que irá se relacionar com a tabela filme
         message.ERRO_BAD_REQUEST.field = '[ID_CLASSIFICAÇÃO] INVÁLIDO'
-    
-    }else {
+
+    } else {
         return false //mostra que nada estava com problema
     }
 
@@ -342,7 +371,7 @@ const validarDados = async function (filme) {
 module.exports = {
     inserirNovoFilme,
     listarFilme,
-    buscarFilme, 
+    buscarFilme,
     atualizarFilme,
     excluirFilme
 }

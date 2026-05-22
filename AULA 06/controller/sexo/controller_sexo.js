@@ -119,6 +119,38 @@ const atualizarSexo = async function (sexo, id, contentType) {
 //função responsavel por listar todos os cadastros de sexo
 const listarSexo = async function () {
 
+    //Criando um clone do objeto json para manipular a sua estrutura local sem modificar a estrutura original
+    let message = JSON.parse(JSON.stringify(config_message))
+
+    try {
+        //chama a função do DAO para retornar a lista de todos os sexos
+        let result = await sexoDAO.selectAllSexo()
+
+        //validação para verificar se o DAO conseguiu processar os dados
+        if (result) {
+            //verificando se existe conteudo no array
+            if (result.length > 0) {
+                message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
+                message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
+                message.DEFAULT_MESSAGE.response.count = result.length //retorna a quantidade de sexos cadastrados dentro do banco de dados
+                message.DEFAULT_MESSAGE.response.sexo = result
+
+                return message.DEFAULT_MESSAGE //status code 200 vai ser retornado um cabeçalho com as informações da api
+            } else {
+                return message.ERRO_NOT_FOUND //erro 404
+            }
+
+        } else {
+            //retorna uma message status code 500 (erro na model)
+            return message.ERRO_INTERNAL_SERVER_MODEL
+        }
+
+    } catch (error) {
+        console.log(error)
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER
+        //retorna uma message status code 500 (erro na controller)
+    }
+
 }
 
 //função responsavel por buscar po um sexo
@@ -133,7 +165,7 @@ const buscarSexo = async function (id) {
             return message.ERRO_BAD_REQUEST //erro 404
 
         } else {
-           
+
             let result = await sexoDAO.selectByIdSexo(id)
 
             console.log(result)
@@ -142,7 +174,7 @@ const buscarSexo = async function (id) {
                 if (result.length > 0) { //se o dao devolver um id maior do que 0
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.classificacao = result
+                    message.DEFAULT_MESSAGE.response.sexo = result
 
                     return message.DEFAULT_MESSAGE //confirma que tudo deu certo (status code 200)
                 } else {
@@ -173,7 +205,7 @@ const validarDados = async function (sexo) {
     let message = JSON.parse(JSON.stringify(config_message))
 
     //Validação dos dados para os atributos do sexo (status 400)
-    if (sexo.nome == undefined || sexo.nome == null || sexo.nome == "" || sexo.nome.length > 30) {
+    if (sexo.sexo == undefined || sexo.sexo == null || sexo.sexo == "" || sexo.sexo.length > 30) {
 
         message.ERRO_BAD_REQUEST.field = '[SEXO] INVÁLIDO'
         return message.ERRO_BAD_REQUEST

@@ -15,6 +15,7 @@ const controllerFilme               = require('./controller/filme/controller_fil
 const controllerPessoa              = require('./controller/pessoa/controller_pessoa.js')
 const controllerClassificacao       = require('./controller/classificacao/controller_classificacao.js')
 const controllersexo                = require('./controller/sexo/controller_sexo.js')
+const controllerGenero              = require('./controller/genero/controller_genero.js')
 
 //criando um objeto para manipular dados do body da API em formato JSON 
 const bodyParserJson = bodyParser.json()
@@ -121,6 +122,7 @@ app.post('/v1/senai/locadora/cadastro', bodyParserJson, async function(request, 
 
 
 //-------------------------->inicia os endpoints da tabela CLASSIFICAÇÃO<------------------------------
+
 //inserir nova classificação
 app.post('/v1/senai/locadora/classificacao', bodyParserJson, async function(request, response){
 
@@ -183,7 +185,9 @@ app.delete('/v1/senai/locadora/classificacao/:id', async function(request, respo
 })
 
 
+
 //-------------------------->inicia os endpoints da tabela SEXO<------------------------------
+
 app.post('/v1/senai/locadora/sexo', bodyParserJson, async function(request, response){
 
     //recebe o conteúdo
@@ -218,6 +222,89 @@ app.get('/v1/senai/locadora/sexo/:id', async function(request, response){
     response.json(result)
 })
 
+//endpoint para LISTAR todas os sexos cadastrados
+app.get('/v1/senai/locadora/sexo', async function(request, response){
+    
+    let result = await controllersexo.listarSexo()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+
+//-------------------------->inicia os endpoints da tabela GENERO<------------------------------
+
+//INSERE um novo genero
+app.post('/v1/senai/locadora/genero', bodyParserJson, async function (request, response) {
+
+      //recebe o conteúdo
+      let dados           = request.body
+      let contentType     = request.headers['content-type'] //recebe o content type da requisição para validar se é um json
+
+    let result = await controllerGenero.inserirNovoGenero()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//LISTA todos os generos
+app.get('/v1/senai/locadora/genero', async function (request, response) {
+    let result = await controllerGenero.listarGenero()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//BUSCA um genero pelo id
+app.get('/v1/senai/locadora/genero/:id', async function (request, response) {
+    let id = request.params.id
+    
+    let result = await controllerGenero.buscarGenero(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//ATUALIZA um genero pelo id
+app.put('/v1/senai/locadora/genero/:id', bodyParserJson, async function(request, response) {
+    
+    //Recebe o contenty type da requisição
+    let contentType = request.headers['content-type']
+
+    //Receber o ID do registro a ser atulizado
+    let id = request.params.id
+
+    //Receber os dados enviados no corpo de requisição
+    let dados = request.body
+
+    //Chama a função de atualizar na controller e encaminhando os dados, id e content-type
+    //obedecendo a ordem de criação na função da controller
+    let result = await controllerGenero.atualizarGenero(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+
+//DELETA um genero pelo id
+app.delete('/v1/senai/locadora/genero/:id', async function(request, response) {
+    
+
+    let id = request.params.id
+
+    let result = await controllerGenero.excluirGenero(id)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+
+
 app.listen(8080, function () {
     console.log('Api funcionando e aguardando novas requisições ...')
 })
+
+

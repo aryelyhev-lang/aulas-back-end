@@ -62,8 +62,23 @@ const updadeSexo = async function (sexo){
 
 }
 
-const selectAllSexo = async function (){
+const selectAllSexo = async function (sexo){
+    try {
+       
+        let sql = `select * from tbl_sexo order by id desc`
 
+        //execulta no banco de dados do script SQL para retornar os sexos cadastrados
+        let result = await knexConex.raw(sql)
+
+        if (Array.isArray(result)) {
+            return result[0]
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
 }
 
 const selectByIdSexo = async function (id){
