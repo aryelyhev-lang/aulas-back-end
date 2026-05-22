@@ -68,18 +68,18 @@ const inserirNovoFilme = async function (filme, contentType) {
 
                     //manipulação de dados para inserir os generos do filme
                     //estrutura de repetição para percorrer o array que vem dentro do filme, para assim pegar o genero guardado no array
-                    for (genero of filme.genero) { 
+                    for (genero of filme.genero) {
                         //cria o objeto json com os ids do filme e do genero
                         let filmeGenero = {
                             "id_filme": filme.id,
                             "id_genero": genero.id
-                    }
+                        }
                         //chama a controller do filmeGenero para inserir os ids
                         //função que recebe o id do genero e o id do filme
                         let resultInsertGenero = await controller_filme_genero.inserirNovoFilmeGenero(filmeGenero)
-                        
+
                         //se o result insert genero for falso em algum momento
-                        if(!resultInsertGenero.status){
+                        if (!resultInsertGenero.status) {
                             return message.SUCCESS_CREATE_ITEM_WARNING //ERRO 201 com alerta de dados não inseridos
                         }
                     }
@@ -201,8 +201,8 @@ const listarFilme = async function () {
 
                     //Cria o objeto de generos relacionados ao filme
                     let resultGenero = await controller_filme_genero.buscarGeneroIdFilme(filme.id)
-                    
-                    if(resultGenero.status){
+
+                    if (resultGenero.status) {
                         filme.genero = resultGenero.response.filme_genero
                     }
                 }
@@ -262,6 +262,13 @@ const buscarFilme = async function (id) {
                             filme.classificacao = resultClassificacao.response.classificacao
                             delete filme.id_classificacao //apaga o id_classificação do filme para não focar repetito
 
+                        }
+
+                        //Cria o objeto de generos relacionados ao filme
+                        let resultGenero = await controller_filme_genero.buscarGeneroIdFilme(filme.id)
+
+                        if (resultGenero.status) {
+                            filme.genero = resultGenero.response.filme_genero
                         }
                     }
 
