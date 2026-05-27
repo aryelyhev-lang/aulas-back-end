@@ -108,7 +108,7 @@ app.put('/v1/senai/locadora/filme/:id', bodyParserJson, async function(request, 
 
 
 
-//-------------------------->inicia os endpoints da tabela CADASTRO<----------------------------------
+//-------------------------->inicia os endpoints da tabela PESSOA<----------------------------------
 app.post('/v1/senai/locadora/cadastro', bodyParserJson, async function(request, response){
 
      let dados           = request.body
@@ -117,6 +117,58 @@ app.post('/v1/senai/locadora/cadastro', bodyParserJson, async function(request, 
  
      response.status(result.status_code)
      response.json(result) 
+})
+
+//atualiza um cadastro já existente 
+app.put('/v1/senai/locadora/cadastro/:id', bodyParserJson, async function(request, response){
+
+    //variavel que recebe o contentType da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe o id do registro que será atualizado
+    let id = request.params.id
+
+    //recebe os dados enviados no corpo da requisição
+    let dados = request.body
+
+    //chama a função de atualizar na controller e encaminha os dados, id e content type
+    //obedecendo a ordem de criação na funação da controller 
+    let result = await controllerPessoa.atualizarCadastro(dados, id, contentType)
+
+    console.log(result)
+    console.log(contentType)
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+//busca uma cadastro pelo id
+app.get('/v1/senai/locadora/cadastro/:id', async function(request, response){
+
+    let id          = request.params.id
+    let result      = await controllerPessoa.buscarCadastro(id) //manda o id para a controller fazer a validação
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//endpoint para LISTAR todos os cadastros
+app.get('/v1/senai/locadora/cadastro', async function(request, response){
+    
+    let result = await controllerPessoa.listarCadastro()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//endpoint para DELETAR um cadastro pelo id
+app.delete('/v1/senai/locadora/cadastro/:id', async function(request, response){
+    let id = request.params.id //recebe o id da cadastro via parametro
+
+    let result = await controllerPessoa.excluirCadastro(id)
+
+    response.status(result.status_code)
+    response.json(result)
 })
 
 
@@ -174,7 +226,7 @@ app.get('/v1/senai/locadora/classificacao', async function(request, response){
     response.json(result)
 })
 
-//endpoint para DELETAR um filme pelo id
+//endpoint para DELETAR uma classificação pelo id
 app.delete('/v1/senai/locadora/classificacao/:id', async function(request, response){
     let id = request.params.id //recebe o id da classificação via parametro
 

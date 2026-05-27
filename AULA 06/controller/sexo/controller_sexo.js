@@ -17,6 +17,7 @@ const inserirNovoSexo = async function (sexo, contentType) {
 
     let message = JSON.parse(JSON.stringify(config_message))
 
+    console.log(sexo)
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -31,7 +32,6 @@ const inserirNovoSexo = async function (sexo, contentType) {
 
                 //chama o dao e manda o objeto
                 let result = await sexoDAO.insertSexo(sexo)
-                console.log(sexo)
 
                 //valida se o result deu certo ou não
                 if (result) {
@@ -41,6 +41,7 @@ const inserirNovoSexo = async function (sexo, contentType) {
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATE_ITEM.status_code
                     message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATE_ITEM.message
                     message.DEFAULT_MESSAGE.response = sexo
+                    console.log(result)
                 } else {
                     //500 = erro no servidor (erro na model)
                     return message.ERRO_INTERNAL_SERVER_MODEL
@@ -55,8 +56,8 @@ const inserirNovoSexo = async function (sexo, contentType) {
         }
 
     } catch (error) {
+        console.log(error)
         //retorna um json para o app pois ele não sabe o que é false
-
         return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 (controller)
     }
 
@@ -230,16 +231,19 @@ const excluirSexo = async function (id) {
 //função responsavel por validar todos os dados 
 const validarDados = async function (sexo) {
 
+    
     //cria um clone da const de menssage
     let message = JSON.parse(JSON.stringify(config_message))
 
     //Validação dos dados para os atributos do sexo (status 400)
     if (sexo.sexo == undefined || sexo.sexo == null || sexo.sexo == "" || sexo.sexo.length > 30) {
 
+        
         message.ERRO_BAD_REQUEST.field = '[SEXO] INVÁLIDO'
         return message.ERRO_BAD_REQUEST
 
     } else {
+        console.log(sexo)
         return false
     }
 
