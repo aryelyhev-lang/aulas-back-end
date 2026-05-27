@@ -183,7 +183,7 @@ const buscarClassificacao = async function (id){
             // Executa uma operação assíncrona para recuperar os dados da classificação com base no ID
             let result = await classificacaoDAO.selectByIdClassificacao(id)
 
-            console.log(result)
+
             if(result){
 
                 if(result.length > 0 ){ //se o dao devolver um id maior do que 0

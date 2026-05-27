@@ -103,6 +103,23 @@ const selectByIdSexo = async function (id){
    
 const deleteSexo = async function (id) {
 
+    try {
+        
+        let sql = `delete from tbl_sexo where id=${id}`
+
+        //execulta o knex
+        let result = await knexConex.raw(sql)
+
+        //validação para verificar se o result é verdadeiro ou não. 
+        if (result) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
 }
 
 

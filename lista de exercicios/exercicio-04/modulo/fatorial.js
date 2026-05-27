@@ -1,35 +1,24 @@
 //arquivo responsavel por calcular o fatorial de um numero
 
-//função responsavel por validar os dados
-const validarDados = function(numeroFatorial) {
+const calcularFatorial = function (numeroUsuario) {
 
-    if (numeroFatorial === "") {
-        return false;
-    } 
-    // Se NÃO for apenas números, retorna falso
-    else if (!/^\d+$/.test(numeroFatorial)) {
-        return false;
-    } 
-    // Se for menor que 0, retorna falso
-    else if (Number(numeroFatorial) <= 1) {
-        return false;
+    let fatorando = 1
+    let sequencia = ""
+
+    for (let contador = numeroUsuario; contador >= 1; contador--) {
+
+        fatorando = fatorando * contador
+        sequencia = sequencia + contador
+
+        if (contador > 1) {
+            sequencia = sequencia + "x"
+        }
+
     }
 
-    console.log(numeroFatorial)
-    return true;
-    
+    console.log(`Fatorial de ${numeroUsuario} é ${sequencia} = ${fatorando}`)
 }
 
-//função responsavel por realizar o calculo do fatorial
-const calcularFatorial = function(numeroFatorial) {
-    let fatorial = Number(numeroFatorial);
-    let resultado = 1;
-
-    for (let cont = fatorial; cont > 1; cont--) {
-        resultado *= cont;
-    }
-
-    return resultado;
+module.exports = {
+    calcularFatorial
 }
-
-

@@ -14,7 +14,7 @@ const bodyParser    = require('body-parser')
 const controllerFilme               = require('./controller/filme/controller_filme.js')
 const controllerPessoa              = require('./controller/pessoa/controller_pessoa.js')
 const controllerClassificacao       = require('./controller/classificacao/controller_classificacao.js')
-const controllersexo                = require('./controller/sexo/controller_sexo.js')
+const controllerSexo                = require('./controller/sexo/controller_sexo.js')
 const controllerGenero              = require('./controller/genero/controller_genero.js')
 
 //criando um objeto para manipular dados do body da API em formato JSON 
@@ -188,17 +188,19 @@ app.delete('/v1/senai/locadora/classificacao/:id', async function(request, respo
 
 //-------------------------->inicia os endpoints da tabela SEXO<------------------------------
 
+//INSERE um sexo
 app.post('/v1/senai/locadora/sexo', bodyParserJson, async function(request, response){
 
     //recebe o conteúdo
     let dados           = request.body
     let contentType     = request.headers['content-type'] //recebe o content type da requisição para validar se é um json
-    let result          = await controllersexo.inserirNovoSexo(dados, contentType)
+    let result          = await controllerSexo.inserirNovoSexo(dados, contentType)
 
     response.status(result.status_code)
     response.json(result) 
 })
 
+//ATUALIZA um sexo
 app.put('/v1/senai/locadora/sexo/:id', bodyParserJson, async function(request, response){
 
     
@@ -207,29 +209,42 @@ app.put('/v1/senai/locadora/sexo/:id', bodyParserJson, async function(request, r
     let dados = request.body
 
     console.log(contentType)
-    let result = await controllersexo.atualizarSexo(dados, id, contentType)
+    let result = await controllerSexo.atualizarSexo(dados, id, contentType)
 
     response.status(result.status_code)
     response.json(result)
     
 })
 
+//BUSCA um sexo pelo id
 app.get('/v1/senai/locadora/sexo/:id', async function(request, response){
     let id          = request.params.id
-    let result      = await controllersexo.buscarSexo(id) //manda o id para a controller fazer a validação
+    let result      = await controllerSexo.buscarSexo(id) //manda o id para a controller fazer a validação
 
     response.status(result.status_code)
     response.json(result)
 })
 
-//endpoint para LISTAR todas os sexos cadastrados
+//LISTA todos os sexos cadastrados
 app.get('/v1/senai/locadora/sexo', async function(request, response){
     
-    let result = await controllersexo.listarSexo()
+    let result = await controllerSexo.listarSexo()
 
     response.status(result.status_code)
     response.json(result)
 })
+
+// //DELETA um sexo pelo id
+// app.delete('/v1/senai/locadora/sexo/:id', async function(request, response) {
+    
+//     let id = request.params.id
+
+//     let result = await controllerSexo.excluirGenero(id)
+
+//     response.status(result.status_code)
+//     response.json(result)
+
+// })
 
 
 
@@ -254,6 +269,7 @@ app.get('/v1/senai/locadora/genero', async function (request, response) {
 
     response.status(result.status_code)
     response.json(result)
+    
 })
 
 //BUSCA um genero pelo id

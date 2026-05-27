@@ -9,7 +9,7 @@ const config_message = require('../modulo/configMessages.js')
 
 //import do dao
 const filmeGeneroDAO = require('../../model/DAO/filme_genero/filme_genero.js')
-const { buscarFilme } = require('./controller_filme.js')
+
 
 
 //Função responsavel por inserir uma nova classificação na tabela
@@ -212,7 +212,6 @@ const buscarFilmeIdGenero = async function (idGenero) {
             // Executa uma operação assíncrona para recuperar os dados da classificação com base no ID
             let result = await filmeGeneroDAO.selectFilmesByIdGenero(id)
 
-            console.log(result)
             if (result) {
 
                 if (result.length > 0) { //se o dao devolver um id maior do que 0
@@ -250,9 +249,9 @@ const buscarGeneroIdFilme = async function (idFilme) {
         } else {
             // Busca no banco de dados uma classificação pelo ID informado
             // Executa uma operação assíncrona para recuperar os dados da classificação com base no ID
-            let result = await filmeFilmeDAO.selectGenerosByIdFilme(id)
+            let result = await filmeGeneroDAO.selectGenerosByIdFilme(idFilme)
 
-            console.log(result)
+
             if (result) {
 
                 if (result.length > 0) { //se o dao devolver um id maior do que 0
@@ -310,6 +309,32 @@ const excluirFilmeGenero = async function (id) {
 
 }
 
+//Função responsavel por excluir os generos relacionadoa com o filme
+const excluirGenerosIdFilme = async function (idFilme) {
+
+    //faz o import das menssagens de status code
+    let message = JSON.parse(JSON.stringify(config_message))
+
+    try {
+        //já tem o id do filme e por isso não precisa buscar
+
+        let result = await filmeGeneroDAO.deleteGenerosByIdFilme(idFilme)
+
+        //validação do result que verifica se o id foi mesmo apagado
+        if (result) {
+            return message.SUCCESS_DELETED_ITEM //200 (registro excluido com sucesso!)
+        } else {
+
+            return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 na model 
+        }
+
+    } catch (error) {
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
+    }
+
+}
+
+
 //Função responsavel por validar os dados
 const validarDados = async function (filmeGenero) {
 
@@ -331,6 +356,8 @@ const validarDados = async function (filmeGenero) {
 
 }
 
+
+
 module.exports = {
     inserirNovoFilmeGenero,
     listarFilmeGenero,
@@ -339,5 +366,6 @@ module.exports = {
     excluirFilmeGenero,
     buscarFilmeIdGenero,
     buscarGeneroIdFilme,
+    excluirGenerosIdFilme,
     validarDados
 }

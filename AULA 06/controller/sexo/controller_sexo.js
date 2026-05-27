@@ -196,6 +196,35 @@ const buscarSexo = async function (id) {
 //função responsavel por excluir um cadastro de sexo 
 const excluirSexo = async function (id) {
 
+    //faz o import das menssagens de status code
+    let message = JSON.parse(JSON.stringify(config_message)) 
+    
+    try {
+        //chama a função "buscarSexo" que já realiza a validação o ID 
+        //todas as validações que tiverem undefined, ele SEMPRE deve ser o primeiro
+        let resultBuscarId = await buscarSexo(id) //faz a validação do erro 400 e 404 dentro da função buscarSexo
+    
+        //validção para verificar se o status é verdadeiro (se o sexo/id existe)
+        if(resultBuscarId.status){
+            //chama a função do DAO para excluir o filme
+            let result = await sexoDAO.deleteSexo(id)
+    
+            //validação do result que verifica se o id foi mesmo apagado
+            if(result){
+                return message.SUCCESS_DELETED_ITEM //200 (registro excluido com sucesso!)
+            }else{
+                 return message.ERRO_INTERNAL_SERVER_MODEL //erro 500 na model 
+             }
+    
+        }else{
+            return resultBuscarId //caso dê erro, ele retorna o result com 400 ou 404
+         }
+           
+            
+    } catch (error) {
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
+    }
+
 }
 
 //função responsavel por validar todos os dados 

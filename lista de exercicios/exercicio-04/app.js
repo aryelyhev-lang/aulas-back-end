@@ -1,16 +1,22 @@
 
-const { validarDados } = require("../exercicio-03/modulo/tabuada")
-const calcularFatorial = require("./modulo/tabuada")
+const readline = require("readline")
 
-let entrada = "1"; // Simulação de entrada do usuário
-
-
-if (validarDados(entrada)) {
-    console.log(calcularFatorial(entrada));
-} else {
-    console.log("Entrada inválida! O cálculo não foi realizado.");
-}
+const entradaDeDados = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
 
 
+const calculo = require("./modulo/fatorial")
+const validarDados = require("./modulo/validar")
 
+entradaDeDados.question('Por favor digite um numero para poder fatorar: ', function (fatorial) {
+    let fatorando = fatorial
 
+    if (validarDados.fatorial(fatorando)) {
+        calculo.calcular(Number(fatorando))
+    }
+
+    entradaDeDados.close()
+
+})

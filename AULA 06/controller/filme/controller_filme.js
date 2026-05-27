@@ -11,6 +11,7 @@ const config_message = require('../modulo/configMessages.js')
 //import do arquivo DAO para fazer o CRUD do filme no banco de dados
 const filmeDAO = require('../../model/DAO/filme/filme.js')
 
+
 //import de arquivos da controller 
 const controller_classificacao = require('../classificacao/controller_classificacao.js')
 const controller_filme_genero = require('./controller_filme_genero.js')
@@ -138,6 +139,33 @@ const atualizarFilme = async function (filme, id, contentType) {
                     let result = await filmeDAO.updadeFilme(filme)
 
                     if (result) {
+
+                        //Manipulação de dados na tabela de relação entre FILME e GENERO
+                        let resultDeleteGenero = await controller_filme_genero.excluirGenerosIdFilme(filme.id)
+
+                        //após a exclusão de todos os generos relacionados com o filme
+                        if (resultDeleteGenero.status) {
+                            
+                            //inserimos os generos novos para atualizar
+                            for (genero of filme.genero) {
+                                
+                                //cria o objeto json com os ids do filme e do genero
+                                let filmeGenero = {
+                                    "id_filme": filme.id,
+                                    "id_genero": genero.id
+                                }
+                                //chama a controller do filmeGenero para inserir os ids
+                                //função que recebe o id do genero e o id do filme
+                                let resultInsertGenero = await controller_filme_genero.inserirNovoFilmeGenero(filmeGenero)
+
+                                //se o result insert genero for falso em algum momento
+                                if (!resultInsertGenero.status) {
+                                    return message.SUCCESS_CREATE_ITEM_WARNING //ERRO 201 com alerta de dados não inseridos
+                                }
+                            }
+
+                        }
+
                         message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATE_ITEM.message
@@ -201,16 +229,18 @@ const listarFilme = async function () {
 
                     //Cria o objeto de generos relacionados ao filme
                     let resultGenero = await controller_filme_genero.buscarGeneroIdFilme(filme.id)
-
+                    console.log(resultGenero)
                     if (resultGenero.status) {
                         filme.genero = resultGenero.response.filme_genero
                     }
                 }
 
+
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count = result.length //retorna a quantidade de filmes dentro do banco de dados
                 message.DEFAULT_MESSAGE.response.filme = result
+
 
                 return message.DEFAULT_MESSAGE //status code 200 vai ser retornado um cabeçalho com as informações da api
             } else {
