@@ -199,7 +199,7 @@ const excluirSexo = async function (id) {
 
     //faz o import das menssagens de status code
     let message = JSON.parse(JSON.stringify(config_message)) 
-    
+
     try {
         //chama a função "buscarSexo" que já realiza a validação o ID 
         //todas as validações que tiverem undefined, ele SEMPRE deve ser o primeiro
@@ -223,6 +223,7 @@ const excluirSexo = async function (id) {
            
             
     } catch (error) {
+        console.log(error)
         return message.ERRO_INTERNAL_SERVER_CONTROLLER //erro 500 da controller
     }
 

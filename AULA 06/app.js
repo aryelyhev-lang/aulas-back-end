@@ -286,17 +286,17 @@ app.get('/v1/senai/locadora/sexo', async function(request, response){
     response.json(result)
 })
 
-// //DELETA um sexo pelo id
-// app.delete('/v1/senai/locadora/sexo/:id', async function(request, response) {
+//DELETA um sexo pelo id
+app.delete('/v1/senai/locadora/sexo/:id', async function(request, response) {
     
-//     let id = request.params.id
+    let id = request.params.id
 
-//     let result = await controllerSexo.excluirGenero(id)
+    let result = await controllerSexo.excluirSexo(id)
 
-//     response.status(result.status_code)
-//     response.json(result)
+    response.status(result.status_code)
+    response.json(result)
 
-// })
+})
 
 
 
