@@ -95,7 +95,7 @@ const atualizarClassificacao = async function (classificacao, id, contentType){
                     if (result){
                         message.DEFAULT_MESSAGE.status          = message.SUCCESS_UPDATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code     = message.SUCCESS_UPDATE_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message         = message.SUCCESS_UPDATE_ITEM.message
+                        message.DEFAULT_MESSAGE.message         = message.SUCCESS_UPDATE_ITEM.message 
                         message.DEFAULT_MESSAGE.response        = classificacao
 
                         return message.DEFAULT_MESSAGE //status code 200 -> representa que uma atualização foi feita com sucesso */

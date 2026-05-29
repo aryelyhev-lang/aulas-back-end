@@ -1,0 +1,132 @@
+/************************************************************************************
+ * Objetivo: Arquivo responsavel pelo CRUD no banco de dados mySQL na tabela nacionalidade
+ * Autor: Aryely Hevylyn
+ * Data: 29/05/2026
+ * Versão: 1.0
+ * **********************************************************************************/
+
+//import da biblioteca para gerenciar o banco de dados mySQL no node.js
+const knex = require('knex')
+
+//import do arquivo de configuração para conexão do banco de dados mySQL
+const knexConfig = require('../../database_config_knex/knexFile.js')
+const { json } = require('body-parser')
+const { ERRO_BAD_REQUEST } = require('../../../controller/modulo/configMessages.js')
+
+//Criar a conexão com o banco de dados mySQL
+const knexConex = knex(knexConfig.development)
+
+const insertNacionalidade = async function (nacionalidade){
+
+    try {
+       
+        let sql = `insert into tbl_nacionalidade (nome) values ('${nacionalidade.nome}');`
+        
+        let result = await knexConex.raw(sql)
+
+        if (result)
+            //retorna o id gerado pelo banco de dados (isso é feito pelo knex)
+            return result[0].insertId 
+        else
+            return false //banco de dados rejeita
+
+    } catch (error) {
+        console.log(error)
+        return false 
+    }
+
+}
+
+const updadeNacionalidade = async function (nacionalidade){
+
+    try {
+        //script para atualizar os dados no banco de dados
+        let sql = `update tbl_nacionalidade set 
+            nome                = '${nacionalidade.nome}'
+            where id            =  ${nacionalidade.id}` //id é um atributo do tipo inteiro e por isso não precisa colocar entre aspas
+
+
+        //execulta o script SQL do DB
+        let result = await knexConex.raw(sql)
+
+        if (result)
+            return true
+        else
+            return false
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+
+}
+
+const selectAllNacionalidade = async function (nacionalidade){
+    try {
+       
+        let sql = `select * from tbl_nacionalidade order by id desc`
+
+        //execulta no banco de dados do script SQL para retornar as nacionalidades cadastradas
+        let result = await knexConex.raw(sql)
+
+        if (Array.isArray(result)) {
+            return result[0]
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
+const selectByIdNacionalidade = async function (id){
+
+    try {
+        //select where -> buscar a nacionalidade pelo id
+        let sql = `select * from tbl_nacionalidade where id=${id}`
+
+        //execulta o knex
+        let result = await knexConex.raw(sql)
+
+        if (Array.isArray(result)) {
+            return result[0]
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+   
+const deleteNacionalidade = async function (id) {
+
+    try {
+        
+        let sql = `delete from tbl_nacionalidade where id=${id}`
+
+        //execulta o knex
+        let result = await knexConex.raw(sql)
+
+        //validação para verificar se o result é verdadeiro ou não. 
+        if (result) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
+
+
+module.exports = {
+    insertNacionalidade,
+    updadeNacionalidade,
+    selectAllNacionalidade,
+    selectByIdNacionalidade,
+    deleteNacionalidade
+}

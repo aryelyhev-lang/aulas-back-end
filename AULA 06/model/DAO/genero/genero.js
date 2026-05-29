@@ -72,11 +72,12 @@ const updateGenero = async function (genero) {
 
     try {
         let sql = `update tbl_genero set
-                nome_genero = '${genero.nome_genero}'
-                where id = ${genero.id}`
+                nome        ='${genero.nome}'
+                where id    =${genero.id}`
         //executa o script SQL no BD
         let result = await knexConex.raw(sql)
     
+        
         if (result) {
             return true
         } else {
@@ -84,6 +85,7 @@ const updateGenero = async function (genero) {
         }
         
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -96,6 +98,7 @@ const deleteGenero = async function (id) {
 
         let result = await knexConex.raw(sql)
 
+        console.log(sql)
         if (result) {
             return true
         } else {
@@ -103,6 +106,7 @@ const deleteGenero = async function (id) {
         }
 
     } catch (error) {
+        console.log(error) //não está chegando aqui
         return false
     }
 

@@ -4,6 +4,22 @@ create database db_filmes_20261_a;
 #ativa o uso do database de filmes
 use db_filmes_20261_a;
 
+show tables;
+
+#criando a tabela nacionalidade 
+create table tbl_nacionalidade (
+	id			int not null primary key auto_increment,
+    nome		varchar(35)
+);
+
+insert into tbl_nacionalidade (
+    nome
+)values(
+	'brasileiro'
+);
+
+select * from tbl_nacionalidade;
+
 #cria a tabela de filmes
 create table tbl_filme (
 	id 					int not null primary key auto_increment,

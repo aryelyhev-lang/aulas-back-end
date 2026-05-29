@@ -40,9 +40,10 @@ const inserirNovoGenero = async function (genero, contentType) {
 }
 
 const validarDados = async function (genero) {
+    console.log(genero)
     let message = JSON.parse(JSON.stringify(config_message))
 
-    if (genero.nome_genero == undefined || genero.nome_genero == '' || genero.nome_genero == null || genero.nome_genero.length > 80) {
+    if (genero.nome == undefined || genero.nome == '' || genero.nome == null || genero.nome.length > 80) {
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST//400
     }else {
@@ -78,11 +79,15 @@ const listarGenero = async function () {
 }
 
 const buscarGenero = async function (id) {
+
     let message = JSON.parse(JSON.stringify(config_message))
+
     try {
         if (id == undefined || id == '' || id == null || isNaN(id)) {
+        
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST //400
+
         } else {
             let result = await generoDAO.selectByIdGenero(id)
 
@@ -102,18 +107,24 @@ const buscarGenero = async function (id) {
         }
 
     } catch (error) {
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 
 }
 
+
+
 const atualizarGenero = async function (genero, id, contentType) {
     let message = JSON.parse(JSON.stringify(config_message))
+
+
     try {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
             //validação para o ID incorreto
             let resultBuscarID = await buscarGenero(id)
-
+          
+            
             if (resultBuscarID.status) {
                 let validar = await validarDados(genero)
 
@@ -122,12 +133,14 @@ const atualizarGenero = async function (genero, id, contentType) {
 
                     let result = await generoDAO.updateGenero(genero)
 
+                   
                     if (result) {
-                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATED_ITEM.status
-                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATED_ITEM.message
+                        
+                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATE_ITEM.message
                         message.DEFAULT_MESSAGE.response = genero
-
+                       
                         return message.DEFAULT_MESSAGE //200
 
                     } else {
@@ -143,26 +156,30 @@ const atualizarGenero = async function (genero, id, contentType) {
 
 
         } else {
+            
             return message.ERROR_CONTENT_TYPE //415
         }
 
     } catch (error) {
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER//500(model)
     }
 
 }
 
 const excluirGenero = async function (id) {
+
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
         let resultBuscarID = await buscarGenero(id)
+        console.log(resultBuscarID) //chegando indefinido
 
         if (resultBuscarID.status) {
             let result = await generoDAO.deleteGenero(id)
 
             if (result) {
-                return message.SUCCESS_DELETE_ITEM //200(Registro excluido)
+                return message.SUCCESS_DELETED_ITEM //200(Registro excluido)
             } else {
                 return message.ERROR_INTERNAL_SERVER_MODEL
             }
@@ -171,7 +188,7 @@ const excluirGenero = async function (id) {
         }
 
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER//500(controller)
+        return message.ERRO_INTERNAL_SERVER_CONTROLLER //500(controller)
     }
 
 

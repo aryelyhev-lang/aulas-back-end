@@ -81,9 +81,9 @@ const atualizarCadastro = async function (pessoa, id, contentType) {
                     let result = await cadastroDAO.updateCadastro(pessoa)
 
                     if (result) {
-                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATED_ITEM.status
-                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATED_ITEM.message
+                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATE_ITEM.message
                         message.DEFAULT_MESSAGE.response = pessoa
 
                         return message.DEFAULT_MESSAGE //200

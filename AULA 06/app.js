@@ -16,6 +16,7 @@ const controllerPessoa              = require('./controller/pessoa/controller_pe
 const controllerClassificacao       = require('./controller/classificacao/controller_classificacao.js')
 const controllerSexo                = require('./controller/sexo/controller_sexo.js')
 const controllerGenero              = require('./controller/genero/controller_genero.js')
+const controllerNacionalidade       = require('./controller/nacionalidade/controller_nacionalidade.js')
 
 //criando um objeto para manipular dados do body da API em formato JSON 
 const bodyParserJson = bodyParser.json()
@@ -350,6 +351,7 @@ app.put('/v1/senai/locadora/genero/:id', bodyParserJson, async function(request,
     //obedecendo a ordem de criação na função da controller
     let result = await controllerGenero.atualizarGenero(dados, id, contentType)
 
+   
     response.status(result.status_code)
     response.json(result)
 
@@ -363,6 +365,70 @@ app.delete('/v1/senai/locadora/genero/:id', async function(request, response) {
     let id = request.params.id
 
     let result = await controllerGenero.excluirGenero(id)
+
+    response.status(result.status_code)
+    console.log(result)
+    response.json(result)
+
+})
+
+
+
+
+//-------------------------->inicia os endpoints da tabela NACIONALIDADE<------------------------------
+
+//INSERE uma nacionalidade
+app.post('/v1/senai/locadora/nacionalidade', bodyParserJson, async function(request, response){
+
+    //recebe o conteúdo
+    let dados           = request.body
+    let contentType     = request.headers['content-type'] //recebe o content type da requisição para validar se é um json
+    let result          = await controllerNacionalidade.inserirNovaNacionalidade(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result) 
+})
+
+//ATUALIZA uma NACIONALIDADE
+app.put('/v1/senai/locadora/nacionalidade/:id', bodyParserJson, async function(request, response){
+
+    
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dados = request.body
+
+    console.log(contentType)
+    let result = await controllerNacionalidade.atualizarNacionalidade(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+//BUSCA uma nacionalidade pelo id
+app.get('/v1/senai/locadora/nacionalidade/:id', async function(request, response){
+    let id          = request.params.id
+    let result      = await controllerNacionalidade.buscarNacionalidade(id) //manda o id para a controller fazer a validação
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//LISTA todos as nacionalidades cadastradas
+app.get('/v1/senai/locadora/nacionalidade', async function(request, response){
+    
+    let result = await controllerNacionalidade.listarNacionalidade()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+//DELETA um nacionalidade pelo id
+app.delete('/v1/senai/locadora/nacionalidade/:id', async function(request, response) {
+    
+    let id = request.params.id
+
+    let result = await controllerNacionalidade.excluirNacionalidade(id)
 
     response.status(result.status_code)
     response.json(result)
